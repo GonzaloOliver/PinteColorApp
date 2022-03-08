@@ -1,0 +1,276 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul id="MarcoTitulosH3" class="breadcrumb">
+    <h3 id="TitulosH3" style="padding-left: 10px">Lineas</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home">Home</a>&nbsp;/&nbsp;Lineas
+    </li>
+  </ul>
+
+  <p class="d-flex flex-column" style="margin-left: auto">
+    <button
+      type="button"
+      class="btn btn-info"
+      data-toggle="modal"
+      data-target="#exampleModal"
+      (click)="actualizarButtonConfirmacion(true)"
+      (click)="resetearFormulario()"
+    >
+      <span class="fas fa-plus"></span>
+      Agregar Linea
+    </button>
+  </p>
+
+  <h1></h1>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    data-backdrop="static"
+    data-keyboard="false"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 *ngIf="esObjetoNuevo" class="modal-title" id="exampleModalLabel">
+            Agregar Linea
+          </h5>
+          <h5 *ngIf="!esObjetoNuevo" class="modal-title" id="exampleModalLabel">
+            Modificar Linea
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!-- Body del Modal -->
+        <div class="modal-body">
+          <form id="formulario-agregar-linea" name="formulario-agregar-linea">
+            <form [formGroup]="contactFormulario" (ngSubmit)="onSaveForm()">
+              <div class="form-group">
+                Nombre:
+                <input
+                  id="inputLinea"
+                  name="nombreLinea"
+                  [(ngModel)]="objetoLinea.name"
+                  type="text"
+                  formControlName="name"
+                  class="form-control"
+                />
+
+                <div
+                  class="alert-danger"
+                  *ngIf="name?.invalid && (name?.dirty || name?.touched)"
+                  role="alert"
+                >
+                  <div
+                    class="container-error-message"
+                    *ngIf="name?.errors?.required"
+                  >
+                    El Campo es Obligatorio
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                Rubro:
+                <ng-select
+                  formControlName="name1"
+                  name="name1"
+                  [(ngModel)]="objetoLinea.sector.name"
+                >
+                  <ng-option
+                    value="{{ r.name }}"
+                    *ngFor="let r of listaRubros"
+                    class="form-control"
+                  >
+                    {{ r.name }}
+                  </ng-option>
+                </ng-select>
+
+                <div
+                  class="alert-danger"
+                  *ngIf="name1?.invalid && (name1?.dirty || name1?.touched)"
+                  role="alert"
+                >
+                  <div
+                    class="container-error-message"
+                    *ngIf="name1?.errors?.required"
+                  >
+                    Seleccione un Rubro
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="modal-footer">
+              <button
+                (click)="guardarLinea()"
+                type="submit"
+                class="btn btn-success"
+                data-dismiss="modal"
+                [disabled]="!contactFormulario.valid"
+                *ngIf="esObjetoNuevo"
+              >
+                <i class="fas fa-check"></i> Guardar
+              </button>
+              <button
+                (click)="modificarLinea()"
+                type="submit"
+                class="btn btn-success"
+                data-dismiss="modal"
+                [disabled]="!contactFormulario.valid"
+                *ngIf="!esObjetoNuevo"
+              >
+                <i class="fas fa-check"></i> Actualizar
+              </button>
+              <button
+                (click)="cancelarLinea()"
+                type="submit"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                <i class="fas fa-window-close"></i> Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row col-xs-12">
+    <div class="form-group col-md-6">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroLineaNombre"
+          [(ngModel)]="filtroLineaNombre"
+          placeholder="Nombre"
+          aria-label="Linea"
+          aria-describedby="inputGroup-sizing-default"
+          (ngModelChange)="listarLineas()"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <ng-select
+        name="filtroLineaNombreRubro"
+        [(ngModel)]="filtroLineaNombreRubro"
+        (ngModelChange)="listarLineas()"
+        placeholder="Rubro"
+      >
+        <ng-option
+          value="{{ r.name }}"
+          *ngFor="let r of listaRubros"
+          class="form-control"
+        >
+          {{ r.name }}
+        </ng-option>
+      </ng-select>
+    </div>
+  </div>
+
+  <div>
+    <div class="tab-content" id="myTabContent">
+      <div
+        class="tab-pane fade show active"
+        id="clientes"
+        role="tabpanel"
+        aria-labelledby="clientes-tab"
+      >
+        <div class="card shadow">
+          <div class="card-body">
+            <table
+              class="display nowrap dataTable dtr-inline collapsed table-bordered table-striped"
+              id="listado_lineas"
+            >
+              <thead>
+                <tr>
+                  <th scope="col" style="text-align: left">Nombre</th>
+                  <th scope="col" style="text-align: left">Rubro</th>
+                  <th scope="col" style="width: 80px">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let l of listaLineas
+                      | paginate
+                        : {
+                            itemsPerPage: itemsPage,
+                            currentPage: page,
+                            totalItems: totalItems
+                          }
+                  "
+                >
+                  <td>{{ l.name }}</td>
+                  <td>{{ buscarNombreRubro(l.sector) }}</td>
+                  <td>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic example"
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-outline-warning btn-block"
+                        data-dismiss="modal"
+                        data-toggle="modal"
+                        data-target="#exampleModal"
+                        style="border-radius: 4px"
+                        (click)="seleccionLineaModificacion(l)"
+                      >
+                        <span class="fas fa-edit"></span>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        style="margin-left: 10px; border-radius: 4px"
+                        (click)="eliminarLinea(l.id)"
+                      >
+                        <span class="fas fa-trash-alt"></span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr></tr>
+              </tfoot>
+            </table>
+            <div class="row" style="padding-top: 30px">
+              <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+              <div class="col-sm-6">
+                <ng-select
+                  style="width: 200px; margin-left: auto"
+                  name="example_length"
+                  placeholder="Cantidad items"
+                  [(ngModel)]="itemsPage"
+                  (change)="listarLineas()"
+                >
+                  <ng-option value="5">5</ng-option>
+                  <ng-option value="10">10</ng-option>
+                  <ng-option value="20">20</ng-option>
+                  <ng-option value="50">50</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <pagination-controls
+            (pageChange)="page = $event; listarLineas()"
+            style="margin-left: auto; padding-right: 30px"
+          >
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

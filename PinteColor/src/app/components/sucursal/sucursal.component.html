@@ -1,0 +1,281 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul id="MarcoTitulosH3" class="breadcrumb">
+    <h3 id="TitulosH3" style="padding-left: 10px">Sucursal</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home/dashboard">Home</a>&nbsp;/&nbsp;Sucursal
+    </li>
+  </ul>
+
+  <p class="d-flex flex-column" style="margin-left: auto">
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#sucursalModal" (click)="onResetForm()"
+      (click)="actualizarButtonConfirmacion(true)">
+      <span class="fas fa-plus"></span>
+      Agregar Sucursal
+    </button>
+  </p>
+
+  <h1></h1>
+
+  <!-- Modal -->
+
+  <div class="modal fade bd-example-modal-lg" id="sucursalModal" tabindex="-1" role="dialog"
+    aria-labelledby="sucursalModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 *ngIf="esObjetoNuevo" class="modal-title" id="sucursalModalLabel" style="text-transform: uppercase">
+            Agregar Sucursal
+          </h5>
+          <h5 *ngIf="!esObjetoNuevo" class="modal-title" id="sucursalModalLabel" style="text-transform: uppercase">
+            Modificar Sucursal
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- Body del Modal -->
+        <div class="modal-body">
+          <div class="card" style="
+              padding-left: 10px;
+              padding-right: 10px;
+              padding-bottom: 10px;
+              background-color: rgb(252, 252, 252);
+            ">
+            <form id="formulario-agregar-sucursal" name="formulario-agregar-sucursal" (ngSubmit)="onSaveForm()"
+              [formGroup]="contactFormulario">
+              <div class="row col-xs-12">
+                <div class="form-group col-md-6">
+                  <strong>Nombre</strong>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fas fa-file-signature"></i>
+                      </span>
+                    </div>
+                    <input id="inputNombreSucursal" name="nombreSucursal" [(ngModel)]="objetoSucursal.name" type="text"
+                      class="form-control" formControlName="name" />
+                  </div>
+
+                  <div class="alert-danger" *ngIf="name?.invalid && name?.dirty" role="alert">
+                    <div class="container-error-message" *ngIf="name?.errors?.required">
+                      <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                      El Campo es Obligatorio
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <strong>Dirección</strong>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fas fa-map-marker"></i>
+                      </span>
+                    </div>
+                    <input id="inputDireccion" name="direccion" [(ngModel)]="objetoSucursal.address" type="text"
+                      class="form-control" formControlName="direccion" />
+                  </div>
+                  <div class="alert-danger" *ngIf="direccion?.invalid && direccion?.dirty" role="alert">
+                    <div class="container-error-message" *ngIf="direccion?.errors?.required">
+                      <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                      El Campo es Obligatorio
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row col-xs-12">
+                <div class="form-group col-md-4">
+                  <strong>Provincia</strong>
+                  <ng-select name="provincia.name" (change)="habilitarCampos()" [(ngModel)]="objetoProvincia.name"
+                    formControlName="provincia">
+                    <ng-option value="{{ p.name }}" *ngFor="let p of listaProvincias">{{ p.name }}</ng-option>
+                  </ng-select>
+                  <div class="alert-danger" *ngIf="provincia?.invalid && provincia?.touched" role="alert">
+                    <div class="container-error-message" *ngIf="provincia?.errors?.required">
+                      <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                      El Campo es Obligatorio
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                  <strong>Ciudad</strong>
+                  <ng-select name="provincia.ciudad" [readonly]="camposSoloLectura" (change)="habilitarCodigoPostal()"
+                    [(ngModel)]="objetoSucursal.city.name" formControlName="ciudad">
+                    <ng-option value="{{ c.name }}" *ngFor="let c of listaCiudades">{{ c.name }}</ng-option>
+                  </ng-select>
+                  <div class="alert-danger" *ngIf="ciudad?.invalid && ciudad?.touched" role="alert">
+                    <div class="container-error-message" *ngIf="ciudad?.errors?.required">
+                      <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                      El Campo es Obligatorio
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                  <strong>Telefono</strong>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fas fa-phone"></i>
+                      </span>
+                    </div>
+                    <input id="inputTelefono" name="telefono" mask="000-000-0000"
+                      [(ngModel)]="objetoSucursal.phoneNumber" type="tel" class="form-control"
+                      (input)="numbersOnlyValidator($event)" formControlName="telefono" />
+                  </div>
+                  <div class="alert-danger" *ngIf="telefono?.invalid && telefono?.dirty" role="alert">
+                    <div class="container-error-message" *ngIf="telefono?.errors?.required">
+                      <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                      El Campo es Obligatorio
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row col-xs-12">
+                <div class="form-group col-md-4">
+                  <div class="form-group custom-control custom-switch" style="padding-top: 12%">
+                    <input type="checkbox" class="custom-control-input" [(ngModel)]="objetoSucursal.isPOS"
+                      (click)="controlarSwitch()" name="switchPOS" id="switchPOS" style="font-size: 200px"
+                      [ngModelOptions]="{ standalone: true }" />
+                    <label class="custom-control-label" for="switchPOS">Es punto de Venta</label>
+                  </div>
+                </div>
+
+                <div class="form-group col-md-3" *ngIf="objetoSucursal.isPOS">
+                  <strong>Punto Venta</strong>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fas fa-map-marker"></i>
+                      </span>
+                    </div>
+                    <input mask="00000" id="inputDireccion" name="sucursalfiscal" class="form-control"
+                      [(ngModel)]="objetoSucursal.posFiscalNumber" [ngModelOptions]="{ standalone: true }" />
+                  </div>
+
+                  <small style="padding-left: 37px">Ej:00005,00001</small>
+                </div>
+              </div>
+
+              <div class="form-row" style="height: 50px">
+                <div class="form-group col-md-9" *ngIf="esObjetoNuevo">
+                  <button type="submit" class="btn btn-success btn-block form-control" (click)="guardarSucursal()"
+                    *ngIf="esObjetoNuevo" data-dismiss="modal" style="height: 50px"
+                    [disabled]="!contactFormulario.valid">
+                    <i class="fas fa-check"></i> Agregar Sucursal
+                  </button>
+                </div>
+                <div class="form-group col-md-9" *ngIf="!esObjetoNuevo">
+                  <button (click)="modificarSucursal()" type="submit" style="height: 50px"
+                    class="btn btn-success btn-block form-control" data-dismiss="modal" style="height: 50px" [disabled]="
+                      !contactFormulario.dirty || !contactFormulario.valid
+                    ">
+                    <i class="fas fa-check"></i> Actualizar
+                  </button>
+                </div>
+                <div class="form-group col-md-3" style="height: 50px">
+                  <button type="button" class="btn btn-secondary form-control" style="height: 50px"
+                    (click)="cancelarSucursal()" data-dismiss="modal">
+                    <i class="fas fa-window-close"></i> Cancelar
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="row col-xs-12">
+      <div class="form-group col-md-6">
+        <div class="input-group-prepend">
+          <input type="text" class="form-control" [(ngModel)]="filtroBusquedaNombre" name="filtroSucursal"
+            (ngModelChange)="listarSucursales()" aria-label="Sucursal" aria-describedby="inputGroup-sizing-default"
+            placeholder="Nombre" />
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <div class="input-group-prepend">
+          <input type="text" class="form-control" [(ngModel)]="filtroBusquedaDireccion" name="filtroSucursal"
+            (ngModelChange)="listarSucursales()" aria-label="Sucursal" aria-describedby="inputGroup-sizing-default"
+            placeholder="Direccion" />
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="sucursal" role="tabpanel" aria-labelledby="sucursal-tab">
+        <div class="card shadow">
+          <div class="card-body">
+            <table class="display nowrap dataTable dtr-inline collapsed table-bordered table-striped"
+              id="listado_msucursales" role="grid">
+              <thead align="right">
+                <tr>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Telefono</th>
+                  <th scope="col">Direccion</th>
+                  <th scope="col">Ciudad</th>
+                  <th scope="col">P.V</th>
+                  <th scope="col" style="width: 80px">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="
+                    let s of listaSucursales
+                      | paginate
+                        : {
+                            itemsPerPage: itemsPage,
+                            currentPage: page,
+                            totalItems: totalItems
+                          }
+                  ">
+                  <td>{{ s.name }}</td>
+                  <td>{{ s.phoneNumber }}</td>
+                  <td>{{ s.address }}</td>
+                  <td *ngIf="s.city != null">{{ s.city.name }}</td>
+                  <td>{{ s.posFiscalNumber }}</td>
+                  <td>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                      <button type="button" class="btn btn-outline-warning btn-block" data-dismiss="modal"
+                        data-toggle="modal" data-target="#sucursalModal" style="border-radius: 4px"
+                        (click)="seleccionSucursalModificacion(s)">
+                        <span class="fas fa-edit"></span>
+                      </button>
+                      <button type="button" class="btn btn-outline-danger" style="border-radius: 4px; margin-left: 10px"
+                        (click)="eliminarSucursal(s.id)">
+                        <span class="fas fa-trash-alt"></span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr></tr>
+              </tfoot>
+            </table>
+            <div class="row" style="padding-top: 30px">
+              <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+              <div class="col-sm-6">
+                <ng-select style="width: 200px; margin-left: auto" name="example_length" placeholder="Cantidad items"
+                  [(ngModel)]="itemsPage" (change)="listarSucursales()">
+                  <ng-option value="5">5</ng-option>
+                  <ng-option value="10">10</ng-option>
+                  <ng-option value="20">20</ng-option>
+                  <ng-option value="50">50</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+
+          <pagination-controls (pageChange)="page = $event; listarSucursales()"
+            style="margin-left: auto; padding-right: 30px"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

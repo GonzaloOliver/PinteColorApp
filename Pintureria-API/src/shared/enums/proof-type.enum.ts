@@ -1,0 +1,15 @@
+export enum ProofType {
+  FacturaA = 'FacturaA',
+  NotaCreditoA = 'NotaCreditoA',
+  FacturaB = 'FacturaB',
+  NotaCreditoB = 'NotaCreditoB',
+  FacturaX = 'FacturaX',
+  NotaCreditoX = 'NotaCreditoX',
+  ReciboX = 'ReciboX',
+  Recibo = 'Recibo',
+  Presupuesto = 'Presupuesto',
+  NotaDebitoA = 'NotaDebitoA',
+  NotaDebitoB = 'NotaDebitoB',
+  NotaDebitoX = 'NotaDebitoX',
+  Remito = 'Remito',
+}

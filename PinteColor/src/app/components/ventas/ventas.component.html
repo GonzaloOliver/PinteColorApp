@@ -1,0 +1,426 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-info">
+            <div class="card-header">
+              <h3 class="card-title">Datos Comprobante</h3>
+            </div>
+            <div class="form-row col-md-12">
+              <div class="form-group col-md-3">
+                Tipo Comp.
+                <ng-select
+                  name="TipoComprobante"
+                  [(ngModel)]="objetoVenta.proofType.value"
+                  [readonly]="habilitarTipoComprobante"
+                  (ngModelChange)="changeHabilitarCliente()"
+                  (ngModelChange)="obtenerProximoNumero()"
+                  (ngModelChange)="habilitarRemitoAsociado()"
+                >
+                  <ng-option
+                    value="{{ t.value }}"
+                    *ngFor="let t of listaTipoComprobante"
+                    style="text-align: left"
+                  >
+                    {{ t.name }}
+                  </ng-option>
+                </ng-select>
+              </div>
+              <div class="form-group col-md-3">
+                Punto Venta
+                <input
+                  id="inputPuntoVenta"
+                  type="text"
+                  name="PuntoVenta"
+                  [(ngModel)]="objetoUsuarioLogueado.store.posFiscalNumber"
+                  class="form-control"
+                  [readonly]="true"
+                />
+              </div>
+              <div class="form-group col-md-3">
+                Nro Comp.
+                <input
+                  id="nroComprobante"
+                  name="numeroComprobante"
+                  type="text"
+                  [(ngModel)]="numeroSugerido"
+                  [readonly]="true"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group col-md-3">
+                Nro AFIP
+                <input
+                  id="nroAFIP"
+                  name="numeroAFIP"
+                  type="text"
+                  [(ngModel)]="objetoVenta.afipNumber"
+                  [readonly]="habilitarNroAFIP"
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Datos Cliente</h3>
+        </div>
+        <div class="form-row col-md-12">
+          <div class="form-group col-md-4">
+            Cliente
+            <ng-select
+              name="ventacliente"
+              [(ngModel)]="objetoVenta.customer.businessName"
+              (ngModelChange)="habilitarDatosCliente()"
+              [readonly]="habilitarCliente"
+            >
+              <ng-option
+                value="{{ customer.businessName }}"
+                *ngFor="let customer of listaClientes"
+                >{{ customer.businessName }}</ng-option
+              >
+            </ng-select>
+          </div>
+          <div class="form-group col-md-4">
+            CUIT
+            <input
+              id="cuit"
+              class="form-control"
+              name="cuitCliente"
+              [(ngModel)]="objetoVenta.customer.idNumber"
+              type="text"
+              readonly="true"
+            />
+          </div>
+          <div class="form-group col-md-4">
+            Condicion IVA
+            <input
+              id="condIVA"
+              class="form-control"
+              name="condicionIVA"
+              [(ngModel)]="objetoVenta.customer.ivaCondition.name"
+              type="text"
+              readonly="true"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPROBANTES GENERAL -->
+  <div class="row" *ngIf="esGeneral">
+    <div class="col-md-12">
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Detalle Comprobante</h3>
+        </div>
+        <ng-form id="formOrigen">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-5">
+                <div class="form-row col-md-12">
+                  <div class="form-group col-md-4">
+                    Condicion venta
+                    <ng-select
+                      name="condicionVenta"
+                      [(ngModel)]="selectCondicionVenta"
+                      [items]="condiciones"
+                      bindValue="name"
+                      bindLabel="name"
+                      (ngModelChange)="condicionVenta()"
+                      [disabled]="habilitarCondVenta"
+                    >
+                    </ng-select>
+                  </div>
+                  <div
+                    class="form-group col-md-3"
+                    *ngIf="habilitarAsociacion"
+                    style="padding-top: 24px"
+                  >
+                    <label>Asociado a Remito</label>
+                  </div>
+                  <div
+                    class="form-group col-md-1"
+                    *ngIf="habilitarAsociacion"
+                    style="padding-top: 24px"
+                  >
+                    <input
+                      name="checkremito"
+                      id="check"
+                      type="checkbox"
+                      [(ngModel)]="habilitarRemito"
+                      (click)="cambioCheck()"
+                    />
+                  </div>
+                  <div class="form-group col-md-4" *ngIf="habilitarAsociacion">
+                    Seleccione Remito
+                    <ng-select
+                      name="TipoComprobante"
+                      [(ngModel)]="objetoVenta.remito.id"
+                      (ngModelChange)="cargarListaDetalleRemito()"
+                      [readonly]="!habilitarRemito"
+                    >
+                      <ng-option
+                        value="{{ r.id }}"
+                        *ngFor="let r of listaRemitos"
+                        style="text-align: left"
+                      >
+                        {{ r.pos.posFiscalNumber + "-" + r.saleNumber }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="form-row col-md-12">
+                  <div class="form-group col-md-12">
+                    Lista de Precios:
+                    <ng-select
+                      name="objetoVenta.pricelist.name"
+                      [(ngModel)]="objetoVenta.pricelist.name"
+                      [readonly]="habilitarListaPrecios"
+                    >
+                      <ng-option
+                        *ngFor="let lista of listaPrecios"
+                        value="{{ lista.name }}"
+                      >
+                        {{ lista.name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="form-group col-md-12">
+                    Comentario (opcional):
+                    <textarea
+                      style="resize: none"
+                      name="comentario"
+                      class="form-control"
+                      id="comentarioVenta"
+                      [(ngModel)]="objetoVenta.commentary"
+                    ></textarea>
+                  </div>
+                  <div class="form-group col-md-12">
+                    Articulo:
+                    <ng-select
+                      name="Articulo"
+                      [(ngModel)]="objetoItem.good.name"
+                      (ngModelChange)="habilitarStockActual()"
+                      [readonly]="verificarHabilitacionArticulo()"
+                    >
+                      <ng-option
+                        value="{{ a.name }}"
+                        *ngFor="let a of listaArticulos"
+                      >
+                        {{ a.name }}
+                      </ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <div class="form-row col-md-12">
+                  <div class="form-group col-md-4">
+                    Venta s/IVA
+                    <input
+                      id="ventaSinIVA"
+                      class="form-control"
+                      name="inputVentaSinIVA"
+                      [(ngModel)]="objetoItem.good.salePrice"
+                      readonly="true"
+                      type="text"
+                    />
+                  </div>
+                  <div class="form-group col-md-4">
+                    Venta c/IVA
+                    <input
+                      id="ventaConIVA"
+                      class="form-control"
+                      name="inputVentaConIVA"
+                      type="text"
+                      [(ngModel)]="objetoItem.good.salePriceWithAliquot"
+                      readonly="true"
+                    />
+                  </div>
+                  <div class="form-group col-md-4">
+                    Venta Final:
+                    <input
+                      id="ventaFinal"
+                      name="inputventaFinal"
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="objetoItem.price"
+                      readonly="true"
+                    />
+                  </div>
+                </div>
+                <div class="form-row col-md-12">
+                  <div class="form-group col-md-5">
+                    Cantidad:
+                    <input
+                      id="cantidad"
+                      name="nombreCantidad"
+                      type="number"
+                      [(ngModel)]="objetoItem.quantity"
+                      (ngModelChange)="changeHabilitarAdd()"
+                      [readonly]="verificarHabilitacionArticulo()"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-group col-md-5">
+                    Stock Actual
+                    <input
+                      id="stockActual"
+                      class="form-control"
+                      name="inputStockActual"
+                      type="text"
+                      [(ngModel)]="objetoStockActual.quantity"
+                      readonly="true"
+                    />
+                  </div>
+                  <div class="form-group col-md-2" style="padding-top: 24px">
+                    <button
+                      type="button"
+                      class="btn btn-success form-control"
+                      (click)="agregarItemLista()"
+                      [disabled]="habilitarAdd"
+                    >
+                      <span class="fas fa-plus"></span>
+                    </button>
+                  </div>
+                </div>
+                <div class="form-row col-md-12">
+                  <p>
+                    Observación: La cantidad ingresada no puede superar el stock
+                    actual
+                  </p>
+                </div>
+              </div>
+              <div class="col-7">
+                <table
+                  class="table table-bordered"
+                  id="articulos-seleccionados"
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">Código</th>
+                      <th scope="col" style="min-width: 15vw; max-width: 15vw">
+                        Nombre
+                      </th>
+                      <th scope="col">Cantidad</th>
+                      <th scope="col">SubTotal</th>
+                      <th scope="col">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let a of listaArticulosSeleccionados">
+                      <td>{{ a.good.code }}</td>
+                      <td style="min-width: 15vw; max-width: 15vw">
+                        {{ a.good.name }}
+                      </td>
+                      <td>{{ a.quantity }}</td>
+                      <td>
+                        {{ " $ " + (a.quantity * a.price).toFixed(2) }}
+                      </td>
+                      <td>
+                        <div
+                          class="btn-group"
+                          role="group"
+                          aria-label="Basic example"
+                        >
+                          <button
+                            type="button"
+                            class="btn btn-outline-danger"
+                            style="border-radius: 4px"
+                            (click)="removerItemLista(a.good.id)"
+                          >
+                            <span class="fas fa-trash-alt"></span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr></tr>
+                  </tfoot>
+                </table>
+                <div class="form-row col-md-12">
+                  <div class="form-group col-md-4">
+                    Cantidad Items:
+                    <input
+                      id="cantidadArticulos"
+                      name="inputCantidadArticulos"
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="listaArticulosSeleccionados.length"
+                      readonly="true"
+                    />
+                  </div>
+                  <div class="form-group col-md-4"></div>
+                  <div class="form-group col-md-4">
+                    Total
+                    <input
+                      id="totalVenta"
+                      class="form-control"
+                      name="totalVenta"
+                      type="text"
+                      [(ngModel)]="totalVenta"
+                      readonly="true"
+                    />
+                  </div>
+                </div>
+                <button
+                  class="btn btn-warning btn-lg col-md-12"
+                  [disabled]="habilitarRegistrar"
+                  (click)="procesarVenta()"
+                >
+                  <i class="fas fa-upload"></i> Registrar Comprobante
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-form>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECIBOS -->
+  <div class="row" *ngIf="esRemito">
+    <div class="col-md-6">
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Detalle Recibo</h3>
+        </div>
+
+        <div class="form-row col-md-12">
+          <div class="form-group col-md-12">
+            Observación (opcional)
+            <textarea
+              style="resize: none"
+              name="observacion"
+              class="form-control"
+              id="exampleFormControlTextarea2"
+              [(ngModel)]="objetoVenta.commentary"
+            ></textarea>
+          </div>
+          <div class="form-group col-md-6">
+            Total
+            <input
+              id="ventaTotal"
+              class="form-control"
+              name="inputVentaTotal"
+              type="number"
+              [(ngModel)]="totalVenta"
+            />
+          </div>
+        </div>
+        <button
+          class="btn btn-warning btn-lg col-md-12"
+          (click)="procesarVenta()"
+        >
+          <i class="fas fa-upload"></i> Registrar Comprobante
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

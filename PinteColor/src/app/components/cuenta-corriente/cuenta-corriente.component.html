@@ -1,0 +1,161 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul class="breadcrumb" id="MarcoTitulosH3">
+    <h3 id="TitulosH3">Cuenta Corriente</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home">Home</a>&nbsp;/&nbsp; Cuenta Corriente
+    </li>
+  </ul>
+  <div class="row col-xs-12">
+    <div class="form-group col-md-3">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroBusquedaNombre"
+          [(ngModel)]="filtroBusquedaNombre"
+          (ngModelChange)="listarClientes()"
+          aria-label="Cliente"
+          aria-describedby="inputGroup-sizing-default"
+          placeholder="Nombre"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroBusquedaApellido"
+          [(ngModel)]="filtroBusquedaApellido"
+          (ngModelChange)="listarClientes()"
+          aria-label="Apellido"
+          aria-describedby="inputGroup-sizing-default"
+          placeholder="Apellido"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-2">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroBusquedaTelefono"
+          [(ngModel)]="filtroBusquedaTelefono"
+          (ngModelChange)="listarClientes()"
+          aria-label="Telefono"
+          aria-describedby="inputGroup-sizing-default"
+          placeholder="Telefono"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-4">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroBusquedaCorreo"
+          [(ngModel)]="filtroBusquedaCorreo"
+          (ngModelChange)="listarClientes()"
+          aria-label="Correo"
+          aria-describedby="inputGroup-sizing-default"
+          placeholder="Correo"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="myTabContent">
+    <div
+      class="tab-pane fade show active"
+      id="clientes"
+      role="tabpanel"
+      aria-labelledby="clientes-tab"
+    >
+      <div class="card shadow">
+        <div class="card-body">
+          <table
+            class="
+              display
+              nowrap
+              dataTable
+              dtr-inline
+              collapsed
+              table-bordered table-striped
+            "
+            id="listado_proveedores"
+            role="grid"
+          >
+            <thead>
+              <tr>
+                <th scope="col">Nombre Completo</th>
+                <th scope="col" style="width: 150px">Telefono</th>
+                <th scope="col" style="width: 350px">Correo</th>
+                <th scope="col" style="width: 150px">Saldo</th>
+                <th scope="col" style="width: 90px">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let c of listaClientes
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPage,
+                          currentPage: page,
+                          totalItems: totalItems
+                        }
+                "
+              >
+                <td>
+                  {{ c.firstName + " " + c.lastName + " - " + c.businessName }}
+                </td>
+                <td>{{ c.phoneNumber }}</td>
+                <td>{{ c.email }}</td>
+                <td>{{ "$ " + c.debtReturn.totalDebt.toFixed(2) }}</td>
+
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-outline-info"
+                    style="border-radius: 4px"
+                    data-toggle="modal"
+                    data-target="#modalUsuario"
+                    [routerLink]="['/home/detalle-cuenta-corriente/' + c.id]"
+                  >
+                    Detalle
+                    <span class="fas fa-search"></span>
+                    <!--(click)="setCtaActual(c.id)"-->
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr></tr>
+            </tfoot>
+          </table>
+          <div class="row" style="padding-top: 30px">
+            <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+            <div class="col-sm-6">
+              <ng-select
+                style="width: 200px; margin-left: auto"
+                name="example_length"
+                placeholder="Cantidad items"
+                [(ngModel)]="itemsPage"
+                (change)="listarClientes()"
+              >
+                <ng-option value="5">5</ng-option>
+                <ng-option value="10">10</ng-option>
+                <ng-option value="20">20</ng-option>
+                <ng-option value="50">50</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <pagination-controls
+          (pageChange)="page = $event; listarClientes()"
+          style="margin-left: auto; padding-right: 30px"
+        ></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>

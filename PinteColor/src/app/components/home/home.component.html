@@ -1,0 +1,386 @@
+<div class="wrapper">
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <ul class="navbar-nav nav justify-content-end">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"
+          ><i class="fas fa-bars"></i
+        ></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/home/dashboard" class="nav-link">Home</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a class="nav-link" style="cursor: pointer" (click)="pathComprobantes()"
+          >Ayuda</a
+        >
+      </li>
+    </ul>
+
+    <ul class="navbar-nav nav justify-content-end" style="margin-left: auto">
+      <li id="CerrarSesion" class="nav justify-content-end" aria-current="page">
+        <a
+          (click)="logoutUser()"
+          href="/login"
+          class="nav-link nav justify-content-end"
+        >
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a
+        >
+      </li>
+    </ul>
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="/" class="brand-link">
+        <img
+          src="assets/img/BotePintura.png"
+          alt="Logo"
+          class="brand-image img-circle elevation-3"
+          style="opacity: 0.8"
+        />
+        <span
+          class="
+            brand-text
+            font-weight-light
+            font-weight:
+            bold
+            text-align:
+            center
+          "
+          >PINTECOLOR</span
+        >
+      </a>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img
+              src="assets/img/avatar.png"
+              class="img-circle elevation-3"
+              alt="User Image"
+            />
+          </div>
+          <div class="info">
+            <a [routerLink]="['/home/perfil']" class="d-block"
+              ><b>{{
+                objetoUsuarioLogueado.firstName +
+                  " " +
+                  objetoUsuarioLogueado.lastName
+              }}</b></a
+            >
+          </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul
+            class="nav nav-pills nav-sidebar flex-column"
+            data-widget="treeview"
+            role="menu"
+            data-accordion="false"
+          >
+            <li class="nav-item">
+              <a
+                style="cursor: pointer"
+                [routerLink]="['/home/perfil']"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa-user"></i>
+                <p>Mi Perfil</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                style="cursor: pointer"
+                [routerLink]="['/home/dashboard']"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa fa-columns"></i>
+                <p>Dashboard</p>
+              </a>
+            </li>
+
+            <li class="nav-item" *ngIf="VentasAllow">
+              <a class="nav-link" style="cursor: pointer">
+                <i class="nav-icon fas fa-cart-arrow-down"></i>
+                <p>
+                  Ventas
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li
+                  id="secundario"
+                  class="nav-item"
+                  data-toggle="collapse"
+                  data-target="#ventas"
+                >
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/ventas']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-success"></i>
+                    <p>Registrar Venta</p>
+                  </a>
+                </li>
+                <li
+                  id="secundario"
+                  class="nav-item"
+                  data-toggle="collapse"
+                  data-target="#consultaventas"
+                >
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/consulta-ventas']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-success"></i>
+                    <p>Consulta Ventas</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" style="cursor: pointer">
+                <i class="nav-icon fas fa-box-open"></i>
+                <p>
+                  Productos
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li
+                  id="secundario"
+                  class="nav-item"
+                  data-toggle="collapse"
+                  data-target="#articulos"
+                >
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/rubro']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-info"></i>
+                    <p>Rubros</p>
+                  </a>
+                </li>
+                <li
+                  id="secundario"
+                  class="nav-item"
+                  data-toggle="collapse"
+                  data-target="#articulos"
+                >
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/linea']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-info"></i>
+                    <p>Lineas</p>
+                  </a>
+                </li>
+                <li
+                  id="secundario"
+                  class="nav-item"
+                  data-toggle="collapse"
+                  data-target="#articulos"
+                >
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/marca']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-info"></i>
+                    <p>Marcas</p>
+                  </a>
+                </li>
+                <li id="secundario" class="nav-item" data-target="#articulos">
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/articulos']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-info"></i>
+                    <p>Articulos</p>
+                  </a>
+                </li>
+                <li
+                  *ngIf="ListaPrecioAllow"
+                  id="secundario"
+                  class="nav-item"
+                  data-toggle="collapse"
+                  data-target="#listaprecio"
+                >
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/listas-de-precios']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-info"></i>
+                    <p>Lista de Precios</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item" *ngIf="StockAllow">
+              <a class="nav-link" style="cursor: pointer">
+                <i class="nav-icon fas fa-truck-loading"></i>
+                <p>
+                  Stock
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li
+                  *ngIf="StockAllow"
+                  id="secundario"
+                  class="nav-item"
+                  data-target="#movimientostock"
+                >
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/stock']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-info"></i>
+                    <p>Agregar Movimientos</p>
+                  </a>
+                </li>
+                <li
+                  *ngIf="StockAllow"
+                  id="secundario"
+                  class="nav-item"
+                  data-toggle="collapse"
+                  data-target="#articulos"
+                >
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/movStock']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-info"></i>
+                    <p>Consultar Movimientos</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="nav-item" *ngIf="ProveedoresAllow">
+              <a
+                style="cursor: pointer"
+                [routerLink]="['/home/proveedores']"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa-truck-moving"></i>
+                <p>Proveedores</p>
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="UsuariosAllow">
+              <a
+                style="cursor: pointer"
+                [routerLink]="['/home/usuarios']"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa-users"></i>
+                <p>Usuarios</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" style="cursor: pointer">
+                <i class="nav-icon fas fa-address-book"></i>
+                <p>
+                  Clientes
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li id="secundario" class="nav-item" data-target="#clientes">
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/clientes']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-danger"></i>
+                    <p>Clientes</p>
+                  </a>
+                </li>
+
+                <li id="secundario" class="nav-item" data-target="#clientes">
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/cuenta-corriente']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-danger"></i>
+                    <p>Cuenta Corriente</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a style="cursor: pointer" class="nav-link">
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                <p>
+                  Listados
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item" id="secundario">
+                  <a
+                    style="cursor: pointer"
+                    [routerLink]="['/home/reporte-lista-precio']"
+                    class="nav-link"
+                  >
+                    <i class="nav-icon far fa-circle text-warning"></i>
+                    <p>Lista de Precios</p>
+                  </a>
+                </li>
+                <li class="nav-item" id="secundario">
+                  <a
+                    style="cursor: pointer"
+                    class="nav-link"
+                    [routerLink]="['/home/reporte-lista-stock']"
+                  >
+                    <i class="nav-icon far fa-circle text-warning"></i>
+                    <p>Stock Articulos</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item" *ngIf="StoresAllow">
+              <a
+                style="cursor: pointer"
+                [routerLink]="['/home/sucursal']"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa-users"></i>
+                <p>Sucursales</p>
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="EmpresaAllow">
+              <a
+                style="cursor: pointer"
+                [routerLink]="['/home/empresa']"
+                class="nav-link"
+              >
+                <i class="nav-icon fas fa fa-cog"></i>
+                <p>Datos Empresa</p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+  </nav>
+</div>
+
+<router-outlet></router-outlet>
+<footer class="main-footer">
+  <div class="float-right d-none d-sm-block"><b>Version</b> 1.0</div>
+  <strong><a>SOFTWARE</a>.</strong> All rights reserved.
+</footer>

@@ -1,0 +1,38 @@
+thead {
+  display: block;
+}
+tbody {
+  overflow-y: scroll;
+  display: block;
+}
+
+tbody {
+  height: 50vh;
+}
+
+
+#articulos-seleccionados > thead > tr > th {
+  min-width: 8vw;
+  max-width: 8vw;
+}
+
+#articulos-seleccionados > tbody > tr > td {
+  min-width: 8vw;
+  max-width: 8vw;
+}
+
+#articulos-seleccionados-envio > thead > tr > th {
+  min-width: 7vw;
+  max-width: 7vw;
+}
+
+#articulos-seleccionados-envio > tbody > tr > td {
+  min-width: 7vw;
+  max-width: 7vw;
+}
+
+ng-form {
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}

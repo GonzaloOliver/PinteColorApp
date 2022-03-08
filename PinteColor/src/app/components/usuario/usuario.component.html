@@ -1,0 +1,591 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul class="breadcrumb" id="MarcoTitulosH3">
+    <h3 id="TitulosH3">Usuarios</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home">Home</a>&nbsp;/&nbsp;Usuarios
+    </li>
+  </ul>
+
+  <p class="d-flex flex-column" style="margin-left: auto">
+    <button
+      type="button"
+      class="btn btn-info"
+      data-toggle="modal"
+      data-target="#modalUsuario"
+      (click)="actualizarButtonConfirmacion(true)"
+      (click)="resetearFormulario()"
+    >
+      <span class="fas fa-plus"></span>
+      Agregar Usuario
+    </button>
+  </p>
+  <h1></h1>
+
+  <!-- Modal -->
+
+  <div
+    class="modal fade"
+    id="modalUsuario"
+    tabindex="-1"
+    role="dialog"
+    data-backdrop="static"
+    data-keyboard="false"
+    aria-labelledby="UsuarioModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalUsuarioLabel" *ngIf="esObjetoNuevo">
+            Agregar Usuario
+          </h5>
+          <h5 class="modal-title" id="modalUsuarioLabel" *ngIf="!esObjetoNuevo">
+            Actualizar Usuario
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- Body del Modal -->
+        <div class="modal-body">
+          <div
+            class="card"
+            style="
+              padding-left: 10px;
+              padding-right: 10px;
+              padding-bottom: 10px;
+              background-color: rgb(252, 252, 252);
+              box-sizing: border-box;
+            "
+          >
+            <form [formGroup]="contactFormulario" (ngSubmit)="onSaveForm()">
+              <div class="form-group">
+                <div class="row col-xs-12">
+                  <div class="form-group col-md-4">
+                    <strong>Nombre</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-file-signature"></i>
+                        </span>
+                      </div>
+
+                      <input
+                        id="inputNombre"
+                        [(ngModel)]="objetoUsuario.firstName"
+                        name="nombre"
+                        type="text"
+                        class="form-control"
+                        formControlName="name"
+                      />
+                    </div>
+                    <div
+                      class="alert-danger"
+                      *ngIf="name?.invalid && name?.dirty"
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="name?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        El Campo es Obligatorio
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <strong>Apellido</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-signature"></i>
+                        </span>
+                      </div>
+                      <input
+                        id="inputApellido"
+                        name="apellido"
+                        [(ngModel)]="objetoUsuario.lastName"
+                        type="text"
+                        class="form-control"
+                        formControlName="apellido"
+                      />
+                    </div>
+                    <div
+                      class="alert-danger"
+                      *ngIf="apellido?.invalid && apellido?.dirty"
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="apellido?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        El Campo es Obligatorio
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    Usuario:
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-user"></i>
+                        </span>
+                      </div>
+                      <input
+                        id="inputUsuario"
+                        name="usuario"
+                        [(ngModel)]="objetoUsuario.username"
+                        type="text"
+                        class="form-control"
+                        formControlName="usuario"
+                      />
+                    </div>
+                    <div
+                      class="alert-danger"
+                      *ngIf="usuario?.invalid && usuario?.dirty"
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="usuario?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        El Campo es Obligatorio
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row col-xs-12" *ngIf="esObjetoNuevo">
+                  <div class="form-group col-md-6">
+                    <strong>Contraseña</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-unlock"></i>
+                        </span>
+                      </div>
+                      <input
+                        style="background-color: #dde9f5"
+                        id="inputContraseñaUsuario"
+                        [(ngModel)]="objetoUsuario.password"
+                        name="password"
+                        type="password"
+                        class="form-control"
+                        formControlName="password"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <div *ngIf="esObjetoNuevo">
+                      <strong>Repetir Contraseña</strong>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="fas fa-unlock"></i>
+                          </span>
+                        </div>
+                        <input
+                          style="background-color: #dde9f5"
+                          id="inputContraseña"
+                          [(ngModel)]="objetoUsuario.repeatPassword"
+                          name="password_confirm"
+                          type="password"
+                          class="form-control"
+                          formControlName="password_confirm"
+                        />
+                      </div>
+                      <div
+                        class="alert-danger"
+                        *ngIf="password_confirm?.invalid"
+                        role="alert"
+                      >
+                        <div
+                          class="container-error-message"
+                          *ngIf="notDefaultValidator"
+                        >
+                          <i
+                            style="padding-left: 5px"
+                            class="fas fa-exclamation-circle"
+                          ></i
+                          >Las Contraseñas no Coinciden
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row col-xs-12">
+                  <div class="form-group col-md-6">
+                    <strong>Rol</strong>
+                    <ng-select
+                      formControlName="roles"
+                      name="usuario.rol"
+                      [(ngModel)]="objetoUsuario.roles[0]"
+                    >
+                      <ng-option
+                        value="{{ rol.value }}"
+                        *ngFor="let rol of listaRoles"
+                        >{{ rol.name }}</ng-option
+                      >
+                    </ng-select>
+                    <div
+                      class="alert-danger"
+                      *ngIf="roles?.invalid && (roles?.dirty || roles?.touched)"
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="roles?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        Seleccione Rol
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <strong>Sucursal</strong>
+                    <ng-select
+                      formControlName="sucursal"
+                      name="usuario.sucursal"
+                      [(ngModel)]="objetoUsuario.store.name"
+                    >
+                      <ng-option
+                        value="{{ sucu.name }}"
+                        *ngFor="let sucu of listaSucursal"
+                        >{{ sucu.name }}</ng-option
+                      >
+                    </ng-select>
+                    <div
+                      class="alert-danger"
+                      *ngIf="
+                        sucursal?.invalid &&
+                        (sucursal?.dirty || sucursal?.touched)
+                      "
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="sucursal?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        Seleccione Sucursal
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row" style="height: 50px">
+                  <div class="form-group col-md-9" *ngIf="esObjetoNuevo">
+                    <button
+                      (click)="guardarUsuario()"
+                      type="submit"
+                      class="btn btn-success btn-block form-control"
+                      data-dismiss="modal"
+                      *ngIf="esObjetoNuevo"
+                      [disabled]="!contactFormulario.valid"
+                      style="height: 50px"
+                    >
+                      <i class="fas fa-check"></i>Agregar Usuario
+                    </button>
+                  </div>
+                  <div class="form-group col-md-9" *ngIf="!esObjetoNuevo">
+                    <button
+                      (click)="modificarUsuario()"
+                      type="submit"
+                      class="btn btn-success btn-block form-control"
+                      data-dismiss="modal"
+                      *ngIf="!esObjetoNuevo"
+                      [disabled]="!contactFormulario.dirty"
+                      style="height: 50px"
+                    >
+                      <i class="fas fa-check"></i> Actualizar
+                    </button>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <button
+                      (click)="cancelarUser()"
+                      type="button"
+                      class="btn btn-secondary form-control"
+                      data-dismiss="modal"
+                      (click)="resetearFormulario()"
+                      style="height: 50px"
+                    >
+                      <i class="fas fa-window-close"></i> Cancelar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="modalModificarContraseña"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="modalModificarContraseñaLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalModificarContraseñaLabel">
+            Modificar contraseña
+          </h5>
+        </div>
+
+        <div class="modal-body">
+          <form [formGroup]="contactFormulario1" (ngSubmit)="onSaveForm2()">
+            <div class="form-group">
+              Nueva Contraseña:
+              <input
+                id="inputContraseñaNueva"
+                [(ngModel)]="objetoChangePassword.newPassword"
+                name="contraseñaNueva"
+                type="password"
+                class="form-control"
+                formControlName="password1"
+              />
+            </div>
+            <div class="form-group">
+              Repetir Nueva Contraseña:
+              <input
+                id="inputContraseñaNuevaRepetida"
+                [(ngModel)]="objetoChangePassword.repeatNewPassword"
+                name="contraseñaNuevaRepetida"
+                type="password"
+                class="form-control"
+                formControlName="password_confirm1"
+              />
+              <div
+                class="alert-danger"
+                *ngIf="password_confirm1?.invalid"
+                role="alert"
+              >
+                <div
+                  class="container-error-message"
+                  *ngIf="notDefaultValidator1"
+                >
+                  <i
+                    style="padding-left: 5px"
+                    class="fas fa-exclamation-circle"
+                  ></i>
+                  Las Contraseñas no Coinciden
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                data-dismiss="modal"
+                [disabled]="!contactFormulario1.valid"
+                (click)="modificarPassword()"
+              >
+                <i class="fas fa-check"></i> Guardar
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+                (click)="onResetForm2()"
+              >
+                <i class="fas fa-window-close"></i> Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row col-xs-12">
+    <div class="form-group col-md-4">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroBusquedaNombre"
+          [(ngModel)]="filtroBusquedaNombre"
+          placeholder="Nombre"
+          aria-label="Usuario"
+          aria-describedby="inputGroup-sizing-default"
+          (ngModelChange)="listarUsuarios()"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-4">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroBusquedaApellido"
+          [(ngModel)]="filtroBusquedaApellido"
+          placeholder="Apellido"
+          aria-label="Usuario"
+          aria-describedby="inputGroup-sizing-default"
+          (ngModelChange)="listarUsuarios()"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-4">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroBusquedaUsuario"
+          [(ngModel)]="filtroBusquedaUsuario"
+          placeholder="Usuario"
+          aria-label="Usuario"
+          aria-describedby="inputGroup-sizing-default"
+          (ngModelChange)="listarUsuarios()"
+        />
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="tab-content" id="myTabContent">
+      <div
+        class="tab-pane fade show active"
+        id="clientes"
+        role="tabpanel"
+        aria-labelledby="clientes-tab"
+      >
+        <div class="card shadow">
+          <div class="card-body">
+            <table
+              class="display nowrap dataTable dtr-inline collapsed table-bordered table-striped"
+              id="listado_usuarios"
+            >
+              <thead align="right">
+                <tr>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Apellido</th>
+                  <th scope="col">Usuario</th>
+                  <th scope="col">Rol</th>
+                  <th scope="col">Sucursal</th>
+                  <th scope="col" style="width: 270px">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr></tr>
+                <tr
+                  *ngFor="
+                    let u of listaUsuarios
+                      | paginate
+                        : {
+                            itemsPerPage: itemsPage,
+                            currentPage: page,
+                            totalItems: totalItems
+                          }
+                  "
+                >
+                  <td>{{ u.firstName }}</td>
+                  <td>{{ u.lastName }}</td>
+                  <td>{{ u.username }}</td>
+                  <td>{{ buscarNombreRol(u.roles[0]) }}</td>
+                  <td>{{ u.store.name }}</td>
+
+                  <td align="right">
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic example"
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-outline-warning"
+                        data-dismiss="modal"
+                        data-toggle="modal"
+                        data-target="#modalUsuario"
+                        style="border-radius: 4px"
+                        (click)="seleccionUsuarioModificacion(u)"
+                      >
+                        <span class="fas fa-edit"></span>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        style="margin-left: 10px; border-radius: 4px"
+                        (click)="eliminarUser(u.id)"
+                      >
+                        <span class="fas fa-trash-alt"></span>
+                      </button>
+                      <button
+                        type="button"
+                        data-dismiss="modal"
+                        data-toggle="modal"
+                        data-target="#modalModificarContraseña"
+                        class="btn btn-outline-secondary"
+                        style="margin-left: 10px; border-radius: 4px"
+                        (click)="onResetForm2()"
+                        (click)="seleccionUsuarioModificacion(u)"
+                      >
+                        Modificar Contraseña
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr></tr>
+              </tbody>
+              <tfoot>
+                <tr></tr>
+              </tfoot>
+            </table>
+            <div class="row" style="padding-top: 30px">
+              <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+              <div class="col-sm-6">
+                <ng-select
+                  style="width: 200px; margin-left: auto"
+                  name="example_length"
+                  placeholder="Cantidad items"
+                  [(ngModel)]="itemsPage"
+                  (change)="listarUsuarios()"
+                >
+                  <ng-option value="5">5</ng-option>
+                  <ng-option value="10">10</ng-option>
+                  <ng-option value="20">20</ng-option>
+                  <ng-option value="50">50</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+
+          <pagination-controls
+            (pageChange)="page = $event; listarUsuarios()"
+            style="margin-left: auto; padding-right: 30px"
+          ></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

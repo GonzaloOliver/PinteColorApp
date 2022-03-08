@@ -1,0 +1,100 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul class="breadcrumb" id="MarcoTitulosH3">
+    <h3 id="TitulosH3">Listado de Stock</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home">Home</a>&nbsp;/&nbsp;Listado de Stock
+    </li>
+  </ul>
+  <div class="row col-xs-12">
+    <div class="form-group col-md-3">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="filtroBusquedaCodigoArticulo"
+          (ngModelChange)="listarStockPorDeposito()"
+          name="filtroBusquedaCodigo"
+          placeholder="Codigo"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="filtroBusquedaNombreArticulo"
+          (ngModelChange)="listarStockPorDeposito()"
+          name="filtroBusquedaNombre"
+          placeholder="Nombre"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <ng-select
+        name="filtroBusquedaSucursal"
+        [(ngModel)]="objetoSucursal.name"
+        (ngModelChange)="listarStockPorDeposito()"
+        placeholder="Todas las Sucursales"
+      >
+        <ng-option
+          value="{{ l.name }}"
+          *ngFor="let l of listaSucursales"
+          class="form-control"
+        >
+          {{ l.name }}
+        </ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div>
+    <div class="tab-content" id="myTabContent">
+      <div
+        class="tab-pane fade show active"
+        id="listaStock"
+        role="tabpanel"
+        aria-labelledby="listaPrecios-tab"
+      >
+        <div class="card shadow">
+          <div class="card-body">
+            <table class="table table-bordered" id="listado_stock">
+              <thead>
+                <tr>
+                  <th scope="col">Codigo</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Sucursal</th>
+                  <th scope="col">Cantidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let stock of listaStockPorDeposito">
+                  <td>{{ stock.good.code }}</td>
+                  <td>{{ stock.good.name }}</td>
+                  <td>{{ stock.store.name }}</td>
+                  <td>
+                    {{ stock.quantity }}
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr></tr>
+                <tr></tr>
+              </tfoot>
+            </table>
+            <div class="row" style="padding-top: 30px">
+              <div class="col-sm-3">
+                <button
+                  class="btn btn-outline-danger btn-lg"
+                  (click)="generateListadoStock('open')"
+                >
+                  <span class="fas fa-2x fa-print"></span> Descargar Lista de
+                  Stock
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

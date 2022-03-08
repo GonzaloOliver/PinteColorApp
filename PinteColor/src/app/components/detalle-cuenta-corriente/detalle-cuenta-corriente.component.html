@@ -1,0 +1,173 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul class="breadcrumb" id="MarcoTitulosH3">
+    <h3 id="TitulosH3">Detalle Cuenta Corriente</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home">Home</a>&nbsp;/&nbsp;
+      <a href="/home/cuenta-corriente">Cuenta Corriente</a>&nbsp;/&nbsp; Detalle
+      Cuenta Corriente
+    </li>
+  </ul>
+
+  <div class="tab-content" id="myTabContent">
+    <div
+      class="tab-pane fade show active"
+      id="clientes"
+      role="tabpanel"
+      aria-labelledby="clientes-tab"
+    >
+      <div class="card shadow">
+        <div class="card-body">
+          <div class="card bg-primary card text-dark bg-light mb-3">
+            <div id="formContent">
+              <div
+                class="tab-content"
+                id="myTabContent"
+                style="background-color: white"
+              >
+                <div
+                  class="tab-pane fade show active"
+                  id="clientes"
+                  role="tabpanel"
+                  aria-labelledby="clientes-tab"
+                >
+                  <div class="card shadow">
+                    <div class="row col-xs-12">
+                      <div class="form-group col-md-12">
+                        <div class="positivo" *ngIf="esSaldoPositivo()">
+                          <H1 style="color: rgb(243, 255, 236)">
+                            {{ "SALDO TOTAL " + " $" + saldoTotalFormateado() }}
+                          </H1>
+                        </div>
+
+                        <div class="cero" *ngIf="esSaldoCero()">
+                          <H2 style="color: rgb(243, 255, 236)">
+                            {{ "SALDO TOTAL" + " $" + saldoTotalFormateado() }}
+                          </H2>
+                        </div>
+
+                        <div class="negativo" *ngIf="esSaldoNegativo()">
+                          <H2 style="color: rgb(243, 255, 236)">{{
+                            "SALDO TOTAL" + " $" + saldoTotalFormateado()
+                          }}</H2>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="card-header">
+                      <div
+                        class="form-group col-md-12 text-secondary"
+                        id="DatosCliente"
+                      >
+                        <H5
+                          ><i class="fas fa-file-signature"> </i
+                          >{{ " " + " " + objetoCliente.businessName }}
+                          <i class="fas fa-map-marker-alt"> </i
+                          >{{ " " + " " + objetoCliente.address }}
+                          <i class="fas fa-phone"> </i
+                          >{{ " " + objetoCliente.phoneNumber }}</H5
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <table
+            class="
+              display
+              nowrap
+              dataTable
+              dtr-inline
+              collapsed
+              table-bordered table-striped
+            "
+            id="listado_proveedores"
+            role="grid"
+          >
+            <thead>
+              <tr>
+                <th scope="col" style="width: 200px">Nro</th>
+                <th scope="col">Comprobante</th>
+                <th scope="col" style="width: 350px">Fecha</th>
+                <th scope="col" style="width: 100px">Importe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let detalle of listaDetalleVenta
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPage,
+                          currentPage: page,
+                          totalItems: totalItems
+                        }
+                "
+              >
+                <td>
+                  {{ detalle.pos.posFiscalNumber! + "-" + detalle.saleNumber }}
+                </td>
+                <td>{{ detalle.proofType }}</td>
+                <td>{{ formatearFecha(detalle.date) }}</td>
+                <td>{{ "$ " + detalle.amount }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr></tr>
+            </tfoot>
+          </table>
+          <div class="row" style="padding-top: 30px">
+            <div class="col-sm-12" style="float: right; padding-bottom: 10px">
+              <button
+                (click)="exportexcel()"
+                class="btn btn-success"
+                style="float: right; height: 50px; width: 50px"
+              >
+                <span
+                  class="fas fa-file-excel"
+                  data-toggle="tooltip"
+                  data-placement="left"
+                  title="Exportar a Excel"
+                  alt="Exportar a Excel"
+                ></span>
+              </button>
+            </div>
+
+            <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+            <div class="col-sm-6">
+              <ng-select
+                style="width: 200px; margin-left: auto"
+                name="example_length"
+                placeholder="Cantidad items"
+                [(ngModel)]="itemsPage"
+                (change)="listarDetalleVenta()"
+              >
+                <ng-option value="5">5</ng-option>
+                <ng-option value="10">10</ng-option>
+                <ng-option value="20">20</ng-option>
+                <ng-option value="50">50</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <pagination-controls
+          (pageChange)="page = $event; listarDetalleVenta()"
+          style="margin-left: auto; padding-right: 30px"
+        ></pagination-controls>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-info"
+        style="border-radius: 4px"
+        data-toggle="modal"
+        data-target="#modalUsuario"
+        [routerLink]="['/home/cuenta-corriente/']"
+      >
+        Volver
+      </button>
+    </div>
+  </div>
+</div>

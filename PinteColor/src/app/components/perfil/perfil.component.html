@@ -1,0 +1,131 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <div class="main-body" style="background-color: #c1cfd1; border-radius: 15px">
+    <nav aria-label="breadcrumb" class="main-breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/home/dashboard">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Perfil</li>
+      </ol>
+    </nav>
+
+    <!-- MODAL CAMBIO PASSWORD -->
+    <div class="modal fade" id="modalModificarPassword" tabindex="-1" role="dialog"
+      aria-labelledby="modalModificarContraseñaLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalModificarContraseñaLabel">
+              Modificar Contraseña
+            </h5>
+          </div>
+
+          <!-- Body del Modal cambiar contraseña -->
+          <div class="modal-body">
+            <ng-form id="formulario-modificar-contraseña">
+              <div class="form-group">
+                Contraseña actual:
+                <input id="inputContraseñaActual" name="contraseñaActual" type="password" class="form-control"
+                  [(ngModel)]="objetoChangePassword.oldPassword" />
+              </div>
+              <div class="form-group">
+                Nueva Contraseña:
+                <input id="inputContraseñaNueva" name="contraseñaNueva" type="password" class="form-control"
+                  [(ngModel)]="objetoChangePassword.newPassword" />
+              </div>
+              <div class="form-group">
+                Repetir Nueva Contraseña:
+                <input id="inputContraseñaNuevaRepetida" name="contraseñaNuevaRepetida" type="password"
+                  class="form-control" [(ngModel)]="objetoChangePassword.repeatNewPassword" />
+              </div>
+              <hr />
+              <div style="padding-bottom: 16px">
+                <a>Observación: Al cambiar la contraseña se cerrará su sesión de
+                  usuario.</a>
+              </div>
+
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success" data-dismiss="modal" (click)="modificarPassword()">
+                  <i class="fas fa-check"></i> Guardar
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                  <i class="fas fa-window-close"></i> Cancelar
+                </button>
+              </div>
+            </ng-form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL CAMBIO PASSWORD -->
+
+    <div class="row gutters-sm">
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center text-center">
+              <img src="assets/img/avatar.png" alt="Admin" class="rounded-circle" width="150" />
+              <div class="mt-3">
+                <h4>
+                  {{
+                  objetoUsuarioLogueado.firstName +
+                  " " +
+                  objetoUsuarioLogueado.lastName
+                  }}
+                </h4>
+                <p class="text-secondary mb-1">
+                  {{ buscarNombreRol(objetoUsuarioLogueado.roles[0]) }}
+                </p>
+                <hr />
+                <button class="btn btn-primary" data-dismiss="modal" data-toggle="modal"
+                  data-target="#modalModificarPassword">
+                  Cambiar Contraseña
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0"><strong>Usuario</strong></h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{ objetoUsuarioLogueado.username }}
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0"><strong>Nombre</strong></h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{ objetoUsuarioLogueado.firstName }}
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3">
+                <h6 class="mb-0"><strong>Apellido</strong></h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{ objetoUsuarioLogueado.lastName }}
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-sm-3 ">
+                <h6 class="mb-0"><strong>Sucursal</strong></h6>
+              </div>
+              <div class="col-sm-9 text-secondary">
+                {{ objetoUsuarioLogueado.store.name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,406 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul class="breadcrumb" id="MarcoTitulosH3">
+    <li>
+      <h3 id="TitulosH3" style="padding-left: 10px">Articulos</h3>
+    </li>
+
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home">Home</a>&nbsp;/&nbsp;Articulos
+    </li>
+  </ul>
+
+  <p class="d-flex flex-column" style="margin-left: auto">
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#articuloModal"
+      (click)="actualizarButtonConfirmacion(true)" (click)="onResetForm()">
+      <span class="fas fa-plus"></span>
+      Agregar Articulo
+    </button>
+  </p>
+
+  <h1></h1>
+
+  <!-- Modal -->
+
+  <div class="modal fade bd-example-modal-lg" id="articuloModal" tabindex="-1" role="dialog"
+    aria-labelledby="articuloModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 *ngIf="esObjetoNuevo" class="modal-title" style="text-transform: uppercase" id="articuloModalLabel">
+            Agregar Articulo
+          </h5>
+          <h5 *ngIf="!esObjetoNuevo" class="modal-title" id="articuloModalLabel" style="text-transform: uppercase">
+            Modificar Articulo
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- Body del Modal -->
+        <div class="modal-body">
+          <div class="card" style="padding-left: 10px; padding-right: 10px">
+            <form id="formulario-agregar-articulo" name="formulario-agregar-articulo" style="padding-top: 10px"
+              [formGroup]="contactFormulario" (ngSubmit)="onSaveForm()">
+              <div class="form-group">
+                <div class="row col-xs-12">
+                  <div class="form-group col-md-3">
+                    <strong>Cod. Interno</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-file-signature"></i>
+                        </span>
+                      </div>
+                      <input id="inputCodigoNumerico" name="codigonumerico" [(ngModel)]="objetoArticulo.codeNumerico"
+                        type="text" class="form-control" style="text-transform: uppercase"
+                        formControlName="codinterno" />
+                    </div>
+                    <div class="alert-danger" *ngIf="codinterno?.invalid && codinterno?.dirty" role="alert">
+                      <div class="container-error-message" *ngIf="codinterno?.errors?.required">
+                        <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                        Campo Obligatorio
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-3">
+                    Cod. Proveedor
+                    <input id="inputCodigoProveedor" name="codigoproveedor" [(ngModel)]="objetoArticulo.codeProveedor"
+                      type="text" style="text-transform: uppercase" class="form-control" formControlName="codproveedor"
+                      readonly="true" />
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <strong>Nombre</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-file-signature"></i>
+                        </span>
+                      </div>
+                      <input id="inputNombre" name="nombre" [(ngModel)]="objetoArticulo.name" type="text"
+                        class="form-control" formControlName="nombre" />
+                    </div>
+                    <div class="alert-danger" *ngIf="nombre?.invalid && nombre?.dirty" role="alert">
+                      <div class="container-error-message" *ngIf="nombre?.errors?.required">
+                        <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                        El Campo es Obligatorio
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row col-xs-12">
+                  <div class="form-group col-md-6">
+                    <strong>Descripción</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-file-signature"></i>
+                        </span>
+                      </div>
+                      <input id="inputDescripcion" type="text" name="descripcion"
+                        [(ngModel)]="objetoArticulo.description" class="form-control" formControlName="descripcion" />
+                    </div>
+                    <div class="alert-danger" *ngIf="descripcion?.invalid && descripcion?.dirty" role="alert">
+                      <div class="container-error-message" *ngIf="descripcion?.errors?.required">
+                        <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                        El Campo es Obligatorio
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-2">
+                    <strong>U.M</strong>
+                    <ng-select name="articulo.measure" [(ngModel)]="objetoArticulo.measure" formControlName="um">
+                      <ng-option value="{{ um.value }}" *ngFor="let um of listaUnidadMedida">{{ um.name }}</ng-option>
+                    </ng-select>
+                    <div class="alert-danger" *ngIf="um?.invalid && (um?.dirty || um?.touched)" role="alert">
+                      <div class="container-error-message" *ngIf="um?.errors?.required">
+                        <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                        Invalida
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <strong>Marca</strong>
+                    <ng-select name="articulo.marca" [(ngModel)]="objetoArticulo.brand.name" formControlName="marca">
+                      <ng-option value="{{ brand.name }}" *ngFor="let brand of listaMarcas">{{ brand.name }}</ng-option>
+                    </ng-select>
+                    <div class="alert-danger" *ngIf="marca?.invalid && (marca?.dirty || marca?.touched)" role="alert">
+                      <div class="container-error-message" *ngIf="marca?.errors?.required">
+                        <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                        Seleccione una Condición
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row col-xs-12">
+                  <div class="form-group col-md-4">
+                    <strong>Rubro</strong>
+                    <ng-select name="articulo.rubro" [(ngModel)]="objetoArticulo.line.sector.name"
+                      (ngModelChange)="habilitarBusquedaLineas()" formControlName="rubro">
+                      <ng-option value="{{ r.name }}" *ngFor="let r of listaRubros">{{ r.name }}</ng-option>
+                    </ng-select>
+                    <div class="alert-danger" *ngIf="rubro?.invalid && (rubro?.dirty || rubro?.touched)" role="alert">
+                      <div class="container-error-message" *ngIf="rubro?.errors?.required">
+                        <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                        Seleccione una Condición
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <strong>Linea</strong>
+                    <ng-select name="articulo.linea" [(ngModel)]="objetoArticulo.line.name"
+                      [readonly]="camposSoloLectura" formControlName="linea">
+                      <ng-option *ngFor="let linea of listaLineas" value="{{ linea.name }}">{{ linea.name }}</ng-option>
+                    </ng-select>
+                    <div class="alert-danger" *ngIf="linea?.invalid && (linea?.dirty || linea?.touched)" role="alert">
+                      <div class="container-error-message" *ngIf="linea?.errors?.required">
+                        <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                        Seleccione una Condición
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <strong>Proveedor</strong>
+                    <ng-select name="articulo.proveedor" [(ngModel)]="objetoArticulo.supplier.businessName"
+                      (ngModelChange)="actualizarCodigoProveedor()" formControlName="proveedor">
+                      <ng-option *ngFor="let supplier of listaProveedores" value="{{ supplier.businessName }}">{{
+                        supplier.businessName }}</ng-option>
+                    </ng-select>
+                    <div class="alert-danger" *ngIf="
+                        proveedor?.invalid &&
+                        (proveedor?.dirty || proveedor?.touched)
+                      " role="alert">
+                      <div class="container-error-message" *ngIf="proveedor?.errors?.required">
+                        <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                        Seleccione una Condición
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row col-xs-12">
+                  <div class="form-group col-md-2">
+                    <strong>Stock Minimo</strong>
+                    <input id="inputStockMinimo" name="stockMinimo" type="text"
+                      [(ngModel)]="objetoArticulo.minimumStock" class="form-control"
+                      [ngModelOptions]="{ standalone: true }" />
+                  </div>
+
+                  <div class="form-group col-md-2">
+                    <strong>Alicuota</strong>
+                    <ng-select name="articulo.alicuota" [(ngModel)]="objetoArticulo.aliquot" formControlName="alicuota1"
+                      (ngModelChange)="habilitarCampos()">
+                      <ng-option value="{{ ali.value }}" *ngFor="let ali of listaAlicuotas">{{ ali.name }}</ng-option>
+                    </ng-select>
+                    <div class="alert-danger" *ngIf="
+                        alicuota1?.invalid &&
+                        (alicuota1?.dirty || alicuota1?.touched)
+                      " role="alert">
+                      <div class="container-error-message" *ngIf="alicuota1?.errors?.required">
+                        <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                        Obligatorio
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-2">
+                    <b>Costo</b>
+                    <input style="
+                        background-color: #abebc6;
+                        border: black 1px solid;
+                        color: black;
+                      " id="inputCosto" name="costo" [readonly]="readCosto" [(ngModel)]="objetoArticulo.costPrice"
+                      (ngModelChange)="actualizarCambioCosto()" type="text" class="form-control"
+                      [ngModelOptions]="{ standalone: true }" />
+                  </div>
+
+                  <div class="form-group col-md-2">
+                    <b>Utilidad %</b>
+                    <input id="inputMarginProfit" style="
+                        background-color: #abebc6;
+                        border: black 1px solid;
+                        color: black;
+                      " [readonly]="readUtilidad" [(ngModel)]="objetoArticulo.profitMargin"
+                      (ngModelChange)="actualizarCambioUtilidad()" name="marginprofit" type="text" class="form-control"
+                      [ngModelOptions]="{ standalone: true }" />
+                  </div>
+
+                  <div class="form-group col-md-2">
+                    <b>Precio S/IVA</b>
+                    <input id="inputPrecio" style="
+                        background-color: #abebc6;
+                        border: black 1px solid;
+                        color: black;
+                      " [readonly]="readPrecioGrav" name="precio" [(ngModel)]="objetoArticulo.salePrice"
+                      (ngModelChange)="actualizarCambioPrecioGravado()" type="text" class="form-control"
+                      [ngModelOptions]="{ standalone: true }" />
+                  </div>
+
+                  <div class="form-group col-md-2">
+                    <b>Precio C/IVA</b>
+                    <input [readonly]="readPrecioIVA" id="inputPrecioConIVA" style="
+                        background-color: #abebc6;
+                        border: black 1px solid;
+                        color: black;
+                      " name="precioconIVA" [(ngModel)]="objetoArticulo.salePriceWithAliquot"
+                      (ngModelChange)="actualizarCambioEnPrecioConIVA()" type="text" class="form-control"
+                      [ngModelOptions]="{ standalone: true }" />
+                  </div>
+                </div>
+
+                <div class="row col-xs-12">
+                  <div class="form-group col-md-9" *ngIf="esObjetoNuevo">
+                    <button type="submit" class="btn btn-success btn-block form-control" (click)="guardarArticulo()"
+                      *ngIf="esObjetoNuevo" data-dismiss="modal" style="height: 50px"
+                      [disabled]="!contactFormulario.valid">
+                      <i class="fas fa-check"></i> Agregar Articulo
+                    </button>
+                  </div>
+                  <div class="form-group col-md-9" *ngIf="!esObjetoNuevo">
+                    <button (click)="modificarArticulo()" type="submit" class="btn btn-success btn-block form-control"
+                      data-dismiss="modal" style="height: 50px">
+                      <i class="fas fa-check"></i> Actualizar
+                    </button>
+                  </div>
+                  <div class="form-group col-md-3">
+                    <button type="button" class="btn btn-secondary form-control" style="height: 50px"
+                      (click)="cancelarArticulo()" data-dismiss="modal">
+                      <i class="fas fa-window-close"></i> Cancelar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row col-xs-12">
+    <div class="form-group col-md-3">
+      <div class="input-group-prepend">
+        <input type="text" class="form-control" [(ngModel)]="filtroBusquedaNombre" name="filtroBusquedaNombre"
+          placeholder="Nombre" aria-label="Articulo" aria-describedby="inputGroup-sizing-default"
+          (ngModelChange)="listarArticulos()" />
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <ng-select name="filtroBusquedaProveedor" [(ngModel)]="filtroBusquedaProveedor"
+        (ngModelChange)="listarArticulos()" placeholder="Proveedor">
+        <ng-option value="{{ p.businessName }}" *ngFor="let p of listaProveedores" class="form-control">
+          {{ p.businessName }}
+        </ng-option>
+      </ng-select>
+    </div>
+
+    <div class="form-group col-md-3">
+      <ng-select [(ngModel)]="filtroBusquedaMarca" name="filtroBusquedaMarca" (ngModelChange)="listarArticulos()"
+        placeholder="Marca">
+        <ng-option value="{{ m.name }}" *ngFor="let m of listaMarcas" class="form-control">
+          {{ m.name }}
+        </ng-option>
+      </ng-select>
+    </div>
+    <div class="form-group col-md-3">
+      <ng-select [(ngModel)]="filtroBusquedaLinea" name="filtroBusquedaLinea" (ngModelChange)="listarArticulos()"
+        placeholder="Linea">
+        <ng-option value="{{ l.name }}" *ngFor="let l of listaLineasAll" class="form-control">
+          {{ l.name }}
+        </ng-option>
+      </ng-select>
+    </div>
+  </div>
+
+  <div>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="articulos" role="tabpanel" aria-labelledby="articulos-tab">
+        <div class="card shadow">
+          <div class="card-body">
+            <table class="display nowrap dataTable dtr-inline collapsed table-bordered table-striped"
+              id="listado_articulos">
+              <thead>
+                <tr>
+                  <th scope="col">Codigo</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Marca</th>
+                  <th scope="col">Linea</th>
+                  <th scope="col">Costo</th>
+                  <th scope="col">Utilidad</th>
+                  <th scope="col">S/IVA</th>
+                  <th scope="col">C/IVA</th>
+                  <th scope="col" style="width: 80px">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="
+                    let a of listaArticulos
+                      | paginate
+                        : {
+                            itemsPerPage: itemsPage,
+                            currentPage: page,
+                            totalItems: totalItems
+                          }
+                  ">
+                  <td>{{ a.code }}</td>
+                  <td>{{ a.name }}</td>
+                  <td>{{ a.brand.name }}</td>
+                  <td>{{ a.line.name }}</td>
+                  <td>
+                    <b>{{ " $" + a.costPrice }}</b>
+                  </td>
+                  <td>
+                    <b>{{ a.profitMargin + " %" }}</b>
+                  </td>
+                  <td>
+                    <b>{{ " $" + a.salePrice }}</b>
+                  </td>
+                  <td>
+                    <b>{{ " $" + a.salePriceWithAliquot}}</b>
+                  </td>
+                  <td>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                      <button type="button" class="btn btn-outline-warning" data-dismiss="modal" data-toggle="modal"
+                        data-target="#articuloModal" style="border-radius: 4px"
+                        (click)="seleccionArticuloModificacion(a)">
+                        <span class="fas fa-edit"></span>
+                      </button>
+                      <button type="button" class="btn btn-outline-danger" (click)="eliminarArticulo(a.id)"
+                        style="margin-left: 10px; border-radius: 4px">
+                        <span class="fas fa-trash-alt"></span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr></tr>
+              </tfoot>
+            </table>
+            <div class="row" style="padding-top: 30px">
+              <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+              <div class="col-sm-6">
+                <ng-select style="width: 200px; margin-left: auto" name="example_length" placeholder="Cantidad items"
+                  [(ngModel)]="itemsPage" (change)="listarArticulos()">
+                  <ng-option value="5">5</ng-option>
+                  <ng-option value="10">10</ng-option>
+                  <ng-option value="20">20</ng-option>
+                  <ng-option value="50">50</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <pagination-controls (pageChange)="page = $event; listarArticulos()"
+            style="margin-left: auto; padding-right: 30px"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

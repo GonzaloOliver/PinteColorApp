@@ -1,0 +1,295 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <div class="col-md-12">
+    <div class="card card-info">
+      <div class="card-header">
+        <h3 class="card-title">Tipo Movimiento</h3>
+      </div>
+      <ng-form id="formTipoMovimiento">
+        <div class="form-group">
+          <ng-select
+            name="TipoMovimiento"
+            [(ngModel)]="tipoMovimiento"
+            [readonly]="habilitarTipoMovimiento"
+            (change)="habilitarSucursal()"
+          >
+            <ng-option
+              value="{{ t }}"
+              *ngFor="let t of listaTipoMovimiento"
+              style="text-align: left"
+            >
+              {{ t }}
+            </ng-option>
+          </ng-select>
+        </div>
+      </ng-form>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="card card-info">
+      <div class="card-header">
+        <h3 class="card-title">Sucursal</h3>
+      </div>
+      <ng-form id="formOrigen">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-row col-md-12">
+                <div class="form-group col-md-6">
+                  Origen
+                  <ng-select
+                    name="SucursalOrigen"
+                    [(ngModel)]="objetoItem.storeNameOrigen"
+                    (change)="habilitarCampos()"
+                    (ngModelChange)="habilitarStockActual()"
+                    [readonly]="habilitarSucursalOrigen"
+                  >
+                    <ng-option
+                      value="{{ s.name }}"
+                      *ngFor="let s of listaSucursales"
+                    >
+                      {{ s.name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+                <div class="form-group col-md-6" *ngIf="esEnvio">
+                  Destino
+                  <ng-select
+                    name="SucursalOrigen"
+                    [(ngModel)]="objetoItem.storeNameDestino"
+                    (change)="habilitarCampos()"
+                    [readonly]="habilitarSucursalDestino"
+                  >
+                    <ng-option
+                      value="{{ s.name }}"
+                      *ngFor="let s of listaSucursales"
+                    >
+                      {{ s.name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="form-row col-md-12">
+                <div class="form-group col-md-6" *ngIf="!esEnvio">
+                  Proveedor
+                  <ng-select
+                    name="stock.proveedor"
+                    [readonly]="habilitarProveedor"
+                    [(ngModel)]="listaProcesarStockMasivo.supplierName"
+                  >
+                    <ng-option
+                      *ngFor="let supplier of listaProveedores"
+                      value="{{ supplier.businessName }}"
+                      >{{ supplier.businessName }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+              </div>
+              <div
+                class="form-row col-md-12"
+                style="height: 142px"
+                *ngIf="!esEnvio"
+              >
+                <div class="form-group col-md-12">
+                  <div class="form-group">
+                    Observación
+                    <textarea
+                      style="resize: none"
+                      name="observacion"
+                      class="form-control rounded-0"
+                      [(ngModel)]="listaProcesarStockMasivo.description"
+                      [readonly]="habilitarObservacion"
+                      id="exampleFormControlTextarea2"
+                      rows="3"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-row col-md-12"
+                style="height: 142px"
+                *ngIf="esEnvio"
+              >
+                <div class="form-group col-md-12">
+                  <div class="form-group">
+                    Observación
+                    <textarea
+                      name="observacion"
+                      style="resize: none"
+                      class="form-control rounded-0"
+                      [(ngModel)]="listaProcesarTransferencia.description"
+                      [readonly]="habilitarObservacion"
+                      id="exampleFormControlTextarea2"
+                      rows="3"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row col-md-12">
+                <div class="form-group col-md-12">
+                  Articulo:
+                  <ng-select
+                    name="Articulo"
+                    [readonly]="habilitarArticulo"
+                    [(ngModel)]="objetoItem.goodName"
+                    (ngModelChange)="habilitarStockActual()"
+                  >
+                    <ng-option
+                      value="{{ a.name }}"
+                      *ngFor="let a of listaArticulos"
+                    >
+                      {{ a.name }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="form-row col-md-12">
+                <div class="form-group col-md-5">
+                  Cantidad:
+                  <input
+                    id="cantidad"
+                    name="nombreCantidad"
+                    type="number"
+                    class="form-control"
+                    [readonly]="habilitarCantidad"
+                    [(ngModel)]="objetoItem.quantity"
+                    (ngModelChange)="habilitarBtnAdd()"
+                  />
+                </div>
+                <div class="form-group col-md-5">
+                  Stock Actual
+                  <input
+                    id="inputstockOrigen"
+                    class="form-control"
+                    name="stockOrigen"
+                    [(ngModel)]="objetoItem.stockOrigen"
+                    type="text"
+                    readonly="true"
+                  />
+                </div>
+                <div class="form-group col-md-2" style="padding-top: 24px">
+                  <button
+                    type="button"
+                    class="btn btn-success form-control"
+                    (click)="agregarItemLista()"
+                    [disabled]="habilitarAdd"
+                  >
+                    <span class="fas fa-plus"></span>
+                  </button>
+                </div>
+              </div>
+              <div class="form-row col-md-12" *ngIf="observacion">
+                <p>
+                  Observación: La cantidad ingresada no puede superar el stock
+                  actual
+                </p>
+              </div>
+            </div>
+            <div class="col-8">
+              <table
+                class="table table-bordered"
+                id="articulos-seleccionados"
+                *ngIf="!esEnvio"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Código</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">S. actual</th>
+                    <th scope="col">S. futuro</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let p of listaArticulosSeleccionados">
+                    <td>{{ p.goodCode }}</td>
+                    <td>{{ p.goodName }}</td>
+                    <td>{{ p.stockOrigen }}</td>
+                    <td>{{ p.stockOrigenFuturo }}</td>
+                    <td>{{ p.quantity }}</td>
+                    <td>
+                      <div
+                        class="btn-group"
+                        role="group"
+                        aria-label="Basic example"
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-outline-danger"
+                          style="border-radius: 4px"
+                          (click)="removerItemLista(p.goodId)"
+                        >
+                          <span class="fas fa-trash-alt"></span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr></tr>
+                </tfoot>
+              </table>
+              <table
+                class="table table-bordered"
+                id="articulos-seleccionados-envio"
+                *ngIf="esEnvio"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Nombre Articulo</th>
+                    <th scope="col">Origen <br>Actual</th>
+                    <th scope="col">Origen <br>Futuro</th>
+                    <th scope="col">Destino Actual</th>
+                    <th scope="col">Destino Futuro</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let p of listaArticulosSeleccionados">
+                    <td>
+                      {{ p.goodName }}
+                    </td>
+                    <td>{{ p.stockOrigen }}</td>
+                    <td>{{ p.stockOrigenFuturo }}</td>
+                    <td>{{ p.stockDestino }}</td>
+                    <td>{{ p.stockDestinoFuturo }}</td>
+                    <td>{{ p.quantity }}</td>
+                    <td>
+                      <div
+                        class="btn-group"
+                        role="group"
+                        aria-label="Basic example"
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-outline-danger"
+                          style="border-radius: 4px"
+                          (click)="removerItemLista(p.goodId)"
+                        >
+                          <span class="fas fa-trash-alt"></span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr></tr>
+                </tfoot>
+              </table>
+              <button
+                class="btn btn-warning btn-lg col-md-12"
+                (click)="procesarLista()"
+                [disabled]="habilitarBtnProcesar"
+              >
+                <i class="fas fa-upload"></i> Procesar Stock
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-form>
+    </div>
+  </div>
+</div>

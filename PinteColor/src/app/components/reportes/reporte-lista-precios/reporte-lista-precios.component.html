@@ -1,0 +1,132 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul class="breadcrumb" id="MarcoTitulosH3">
+    <h3 id="TitulosH3">Lista de Precios</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home">Home</a>&nbsp;/&nbsp;Listado de Precios
+    </li>
+  </ul>
+  <div class="row col-xs-12">
+    <div class="form-group col-md-3">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroBusquedaCode"
+          [(ngModel)]="filtroBusquedaCode"
+          (ngModelChange)="listarArticulosListaReporte()"
+          placeholder="Codigo"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroBusquedaNombre"
+          [(ngModel)]="filtroBusquedaNombre"
+          (ngModelChange)="listarArticulosListaReporte()"
+          placeholder="Nombre"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <ng-select
+        name="filtroListaPrecio"
+        [(ngModel)]="objetoListaPrecio.name"
+        (ngModelChange)="actualizarPrecios()"
+        placeholder="Lista de Precio"
+      >
+        <ng-option
+          value="{{ l.name }}"
+          *ngFor="let l of listaListaPrecio"
+          class="form-control"
+        >
+          {{ l.name }}
+        </ng-option>
+      </ng-select>
+    </div>
+  </div>
+  <div>
+    <div class="tab-content" id="myTabContent">
+      <div
+        class="tab-pane fade show active"
+        id="listaPrecios"
+        role="tabpanel"
+        aria-labelledby="listaPrecios-tab"
+      >
+        <div class="card shadow">
+          <div class="card-body">
+            <table
+              class="display nowrap dataTable dtr-inline collapsed table-bordered table-striped"
+              id="listado_precios"
+              role="grid"
+            >
+              <thead>
+                <tr>
+                  <th scope="col">Codigo</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Marca</th>
+                  <th scope="col">P. Venta C/IVA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let a of listaArticulo
+                      | paginate
+                        : {
+                            itemsPerPage: itemsPage,
+                            currentPage: page,
+                            totalItems: totalItems
+                          }
+                  "
+                >
+                  <td>{{ a.code }}</td>
+                  <td>{{ a.name }}</td>
+                  <td>{{ a.brand.name }}</td>
+                  <td>{{ a.salePriceWithAliquot.toFixed(2) }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr></tr>
+                <tr></tr>
+              </tfoot>
+            </table>
+            <div class="row" style="padding-top: 30px">
+              <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+              <div class="col-sm-6">
+                <ng-select
+                  style="width: 200px; margin-left: auto"
+                  name="example_length"
+                  placeholder="Cantidad items"
+                  [(ngModel)]="itemsPage"
+                  (change)="listarArticulos()"
+                >
+                  <ng-option value="5">5</ng-option>
+                  <ng-option value="10">10</ng-option>
+                  <ng-option value="20">20</ng-option>
+                  <ng-option value="50">50</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="row" style="padding-top: 30px">
+              <div class="col-sm-3">
+                <button
+                  class="btn btn-outline-danger btn-lg"
+                  (click)="generateListaPrecio('open')"
+                >
+                  <span class="fas fa-2x fa-print"></span> Descargar Lista de Precio
+                </button>
+              </div>
+            </div>
+          </div>
+          <pagination-controls
+            (pageChange)="page = $event; listarArticulos()"
+            style="margin-left: auto; padding-right: 30px"
+          ></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

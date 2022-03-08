@@ -1,0 +1,4 @@
+FROM library/postgres
+ENV POSTGRES_USER pintureria
+ENV POSTGRES_PASSWORD pintureria
+ENV POSTGRES_DB pintureria

@@ -1,0 +1,107 @@
+<div
+  id="idContentWrapper"
+  class="content-wrapper d-flex justify-content-center"
+>
+  <div class="col-md-12">
+    <div class="card card-info">
+      <div class="card-header">
+        <h3 class="card-title">Datos Empresa</h3>
+      </div>
+      <ng-form id="formDatosEmpresa">
+        <div class="form-group">
+          <label>E-mail</label>
+          <input
+            type="text"
+            class="form-control"
+            value="{{ objetoEmpresa.email }}"
+            [(ngModel)]="objetoEmpresa.email"
+            [readonly]="camposSoloLectura"
+            name="email"
+          />
+        </div>
+        <div class="form-group">
+          <label>Razon Social</label>
+          <input
+            value="{{ objetoEmpresa.businessName }}"
+            [(ngModel)]="objetoEmpresa.businessName"
+            type="text"
+            name="razonSocial"
+            class="form-control"
+            [readonly]="camposSoloLectura"
+          />
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>CUIT</label>
+            <input
+              style="height: 35px"
+              [readonly]="camposSoloLectura"
+              [(ngModel)]="objetoEmpresa.cuit"
+              [ngModelOptions]="{ standalone: true }"
+              type="text"
+              class="form-control"
+              name="cuit"
+              mask="00-00000000-0" 
+            />
+          </div>
+          <div class="form-group col-md-6">
+            <label>Condicion IVA</label>
+            <ng-select
+              name="empresa.ivaCondition"
+              [(ngModel)]="objetoEmpresa.ivaCondition"
+              [disabled]="camposSoloLectura"
+            >
+              <ng-option
+                value="{{ iva.value }}"
+                *ngFor="let iva of listaCondicionesIva"
+                >{{ iva.name }}</ng-option
+              >
+            </ng-select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <div class="form-row">
+              <button
+                [disabled]="camposSoloLectura"
+                (click)="guardarEmpresa()"
+                style="margin-left: 10px; margin-top: 10px"
+                type="button"
+                class="btn btn-success"
+                id="btnGuardar"
+              >
+                Guardar
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-row">
+              <button
+                *ngIf="camposSoloLectura"
+                [disabled]="!camposSoloLectura"
+                (click)="habilitarCampos()"
+                style="margin-left: 15px; margin-top: 10px"
+                type="button"
+                class="btn btn-warning"
+                data-dismiss="modal"
+              >
+                Modificar
+              </button>
+              <button *ngIf="!camposSoloLectura"
+                (click)="cancelarOperacion()"
+                style="margin-left: 15px; margin-top: 10px"
+                type="button"
+                class="btn btn-danger"
+                data-dismiss="modal"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-form>
+    </div>
+   
+  </div>
+</div>

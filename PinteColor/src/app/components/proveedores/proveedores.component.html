@@ -1,0 +1,696 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul id="MarcoTitulosH3" class="breadcrumb">
+    <h3 id="TitulosH3">Proveedores</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home">Home</a>&nbsp;/&nbsp; Proveedores
+    </li>
+  </ul>
+
+  <p class="d-flex flex-column" style="margin-left: auto">
+    <button
+      type="button"
+      class="btn btn-info"
+      data-toggle="modal"
+      data-target="#proveedorModal"
+      (click)="actualizarButtonConfirmacion(true)"
+      (click)="onResetForm()"
+    >
+      <span class="fas fa-plus"></span>
+      Agregar Proveedores
+    </button>
+  </p>
+
+  <h1></h1>
+
+  <!-- Modal -->
+  <div
+    class="modal fade bd-example-modal-lg"
+    id="proveedorModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="proveedorModalLabel"
+    data-backdrop="static"
+    data-keyboard="false"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5
+            *ngIf="esObjetoNuevo"
+            class="modal-title"
+            id="proveedorModalLabel"
+            style="text-transform: uppercase"
+          >
+            Agregar Proveedor
+          </h5>
+          <h5
+            *ngIf="!esObjetoNuevo"
+            class="modal-title"
+            id="proveedorModalLabel"
+            style="text-transform: uppercase"
+          >
+            Modificar Proveedor
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- Body del Modal -->
+        <div class="modal-body">
+          <div
+            class="card"
+            style="
+              padding-left: 10px;
+              padding-right: 10px;
+              padding-bottom: 10px;
+              background-color: rgb(252, 252, 252);
+            "
+          >
+            <form
+              id="formulario-agregar-proveedor"
+              name="formulario-agregar-proveedor"
+              style="padding-top: 10px"
+              [formGroup]="contactFormulario"
+              (ngSubmit)="onSaveForm()"
+            >
+              <div class="form-group">
+                <div class="row col-xs-12">
+                  <div class="form-group col-md-5">
+                    <strong>Nombre Contacto:</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-file-signature"></i>
+                        </span>
+                      </div>
+                      <input
+                        id="inputNombreApellido"
+                        name="nombreApellido"
+                        [(ngModel)]="objetoProveedor.contactFullName"
+                        type="text"
+                        class="form-control"
+                        formControlName="name"
+                      />
+                    </div>
+                    <div
+                      class="alert-danger"
+                      *ngIf="name?.invalid && name?.dirty"
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="name?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        El Campo es Obligatorio
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-3">
+                    <strong>Cod. Proveedor</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-barcode"></i>
+                        </span>
+                      </div>
+                      <input
+                        id="inputCodProv"
+                        type="text"
+                        name="CodigoProveedor"
+                        [(ngModel)]="objetoProveedor.code"
+                        class="form-control"
+                        formControlName="CodigoProveedor"
+                        [readonly]="!esObjetoNuevo"
+                      />
+                    </div>
+                    <div
+                      class="alert-danger"
+                      *ngIf="CodigoProveedor?.invalid && CodigoProveedor?.dirty"
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="CodigoProveedor?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        Deben Ser 3 Letras
+                      </div>
+                      <div
+                        class="container-error-message"
+                        *ngIf="CodigoProveedor?.errors?.minlength"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        Deben Ser 3 Letras
+                      </div>
+                      <div
+                        class="container-error-message"
+                        *ngIf="CodigoProveedor?.errors?.maxlength"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        Deben Ser 3 Letras
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <strong>Condición IVA</strong>
+                    <ng-select
+                      name="proveedor.ivaCondition"
+                      [(ngModel)]="objetoProveedor.ivaCondition"
+                      formControlName="condicioniva"
+                    >
+                      <ng-option
+                        value="{{ iva.value }}"
+                        *ngFor="let iva of listaCondicionesIva"
+                        >{{ iva.name }}
+                      </ng-option>
+                    </ng-select>
+                    <div
+                      class="alert-danger"
+                      *ngIf="
+                        condicioniva?.invalid &&
+                        (condicioniva?.dirty || condicioniva?.touched)
+                      "
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="condicioniva?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        Seleccione una Condición
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row col-xs-12">
+                  <div class="form-group col-md-8">
+                    <strong>Razón Social</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-building"></i>
+                        </span>
+                      </div>
+                      <input
+                        id="inputRazonSocial"
+                        name="razonSocial"
+                        [(ngModel)]="objetoProveedor.businessName"
+                        type="text"
+                        class="form-control"
+                        formControlName="razonsocial"
+                      />
+                    </div>
+
+                    <div
+                      class="alert-danger"
+                      *ngIf="razonsocial?.invalid && razonsocial?.dirty"
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="razonsocial?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        El Campo es Obligatorio
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <strong>CUIT</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-id-badge"></i>
+                        </span>
+                      </div>
+                      <input
+                        id="inputCUIT"
+                        name="cuit"
+                        [(ngModel)]="objetoProveedor.cuit"
+                        type="text"
+                        class="form-control"
+                        formControlName="cuit"
+                        mask="00-00000000-0"
+                      />
+                    </div>
+                    <div
+                      class="alert-danger"
+                      *ngIf="cuit?.invalid && cuit?.dirty"
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="cuit?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        El Campo es Obligatorio
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row col-xs-12">
+                  <div class="form-group col-md-4">
+                    <strong>Dirección</strong>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-map-marker"></i>
+                        </span>
+                      </div>
+                      <input
+                        id="inputDireccion"
+                        name="direccion"
+                        [(ngModel)]="objetoProveedor.address"
+                        type="text"
+                        class="form-control"
+                        formControlName="direccion"
+                      />
+                    </div>
+                    <div
+                      class="alert-danger"
+                      *ngIf="direccion?.invalid && direccion?.dirty"
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="direccion?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        El Campo es Obligatorio
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <strong>Provincia</strong>
+                    <ng-select
+                      name="provincia.name"
+                      (change)="habilitarCampos()"
+                      [(ngModel)]="objetoProvincia.name"
+                      formControlName="provincia1"
+                    >
+                      <ng-option
+                        value="{{ p.name }}"
+                        *ngFor="let p of listaProvincias"
+                        >{{ p.name }}</ng-option
+                      >
+                    </ng-select>
+
+                    <div
+                      class="alert-danger"
+                      *ngIf="
+                        provincia1?.invalid &&
+                        (provincia1?.dirty || provincia1?.touched)
+                      "
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="provincia1?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        Seleccione una Provincia
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <strong>Ciudad</strong>
+                    <ng-select
+                      name="provincia.ciudad"
+                      [readonly]="camposSoloLectura"
+                      [(ngModel)]="objetoProveedor.city.name"
+                      formControlName="ciudad1"
+                      (change)="habilitarCodigoPostal()"
+                    >
+                      <ng-option
+                        value="{{ c.name }}"
+                        *ngFor="let c of listaCiudades"
+                        >{{ c.name }}</ng-option
+                      >
+                    </ng-select>
+
+                    <div
+                      class="alert-danger"
+                      *ngIf="ciudad1?.invalid && ciudad1?.dirty"
+                      role="alert"
+                    >
+                      <div
+                        class="container-error-message"
+                        *ngIf="ciudad1?.errors?.required"
+                      >
+                        <i
+                          style="padding-left: 5px"
+                          class="fas fa-exclamation-circle"
+                        ></i>
+                        Seleccione una Provincia
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <div class="row col-xs-12">
+                    <div class="form-group col-md-2">
+                      <strong>C. P.</strong>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="fas fa-map-marked-alt"></i>
+                          </span>
+                        </div>
+                        <input
+                          id="inputZIPCode"
+                          name="ZIP"
+                          type="text"
+                          [(ngModel)]="objetoProveedor.city.zipCode"
+                          class="form-control"
+                          formControlName="cdpostal"
+                          readonly="true"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                      <strong>Teléfono</strong>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="fas fa-phone"></i>
+                          </span>
+                        </div>
+                        <input
+                          class="form-control"
+                          type="tel"
+                          id="inputTelefono"
+                          name="Telefono"
+                          formControlName="telefono"
+                          class="form-control"
+                          mask="000-000-0000"
+                          [(ngModel)]="objetoProveedor.phoneNumber"
+                          (input)="numbersOnlyValidator($event)"
+                        />
+                      </div>
+                      <div
+                        class="alert-danger"
+                        *ngIf="telefono?.invalid && telefono?.dirty"
+                        role="alert"
+                      >
+                        <div
+                          class="container-error-message"
+                          *ngIf="telefono?.errors?.required"
+                        >
+                          <i
+                            style="padding-left: 5px"
+                            class="fas fa-exclamation-circle"
+                          ></i>
+                          El Campo es Obligatorio
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                      <strong>E-Mail</strong>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="fas fa-envelope"></i>
+                          </span>
+                        </div>
+                        <input
+                          id="inputMail"
+                          type="text"
+                          name="email"
+                          [(ngModel)]="objetoProveedor.email"
+                          class="form-control"
+                          formControlName="email1"
+                        />
+                      </div>
+
+                      <div
+                        class="alert-danger"
+                        *ngIf="email1?.invalid && email1?.dirty"
+                      >
+                        <div
+                          class="container-error-message"
+                          *ngIf="
+                            email1?.dirty &&
+                            email1?.invalid &&
+                            email1?.errors?.pattern
+                          "
+                        >
+                          Direccion E-Mail Invalida.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row" style="height: 50px">
+                  <div class="form-group col-md-9" *ngIf="esObjetoNuevo">
+                    <button
+                      type="submit"
+                      class="btn btn-success btn-block form-control"
+                      (click)="guardarProveedor()"
+                      *ngIf="esObjetoNuevo"
+                      data-dismiss="modal"
+                      style="height: 50px"
+                      [disabled]="!contactFormulario.valid"
+                    >
+                      <i class="fas fa-check"></i> Agregar Proveedor
+                    </button>
+                  </div>
+                  <div
+                    class="form-group col-md-9"
+                    *ngIf="!esObjetoNuevo"
+                    style="height: 50px"
+                  >
+                    <button
+                      (click)="modificarProveedor()"
+                      type="submit"
+                      style="height: 50px"
+                      class="btn btn-success btn-block form-control"
+                      data-dismiss="modal"
+                      [disabled]="!contactFormulario.dirty"
+                    >
+                      <i class="fas fa-check"></i> Actualizar
+                    </button>
+                  </div>
+                  <div class="form-group col-md-3" style="height: 50px">
+                    <button
+                      type="button"
+                      class="btn btn-secondary form-control"
+                      style="height: 50px"
+                      (click)="cancelarProveedor()"
+                      data-dismiss="modal"
+                    >
+                      <i class="fas fa-window-close"></i> Cancelar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row col-xs-12">
+    <div class="form-group col-md-4">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="filtroBusquedaRazonSocial"
+          name="filtroBusquedaRazonSocial"
+          (ngModelChange)="listarProveedores()"
+          aria-label="Proveedor"
+          aria-describedby="inputGroup-sizing-default"
+          placeholder="Razón Social"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-4">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="filtroBusquedaDireccion"
+          name="filtroBusquedaDireccion"
+          (ngModelChange)="listarProveedores()"
+          aria-label="Proveedor"
+          aria-describedby="inputGroup-sizing-default"
+          placeholder="Dirección"
+        />
+      </div>
+    </div>
+    <div class="form-group col-md-4">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="filtroBusquedaTelefono"
+          name="filtroBusquedaTelefono"
+          (ngModelChange)="listarProveedores()"
+          aria-label="Proveedor"
+          aria-describedby="inputGroup-sizing-default"
+          placeholder="Telefono"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="myTabContent">
+    <div
+      class="tab-pane fade show active"
+      id="proveedores"
+      role="tabpanel"
+      aria-labelledby="proveedor-tab"
+    >
+      <div class="card shadow">
+        <div class="card-body">
+          <table
+            class="display nowrap dataTable dtr-inline collapsed table-bordered table-striped"
+            id="listado_proveedores"
+          >
+            <thead>
+              <tr>
+                <th scope="col" style="width: 70px">Codigo</th>
+                <th scope="col">Contacto</th>
+                <th scope="col">Razon Social</th>
+                <th scope="col">CUIT</th>
+                <th scope="col">Telefono</th>
+                <th scope="col" style="width: 350px">Direccion</th>
+                <th scope="col" style="width: 80px">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let p of listaProveedores
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPage,
+                          currentPage: page,
+                          totalItems: totalItems
+                        }
+                "
+              >
+                <td>{{ p.code }}</td>
+                <td>{{ p.contactFullName }}</td>
+                <td>{{ p.businessName }}</td>
+                <td>{{ p.cuit }}</td>
+                <td>{{ p.phoneNumber }}</td>
+                <td>
+                  {{
+                    p.address +
+                      " - " +
+                      p.city.name +
+                      " - " +
+                      p.city.province?.name
+                  }}
+                </td>
+
+                <td>
+                  <div
+                    class="btn-group"
+                    role="group"
+                    aria-label="Basic example"
+                  >
+                    <button
+                      type="button"
+                      class="btn btn-outline-warning"
+                      data-dismiss="modal"
+                      data-toggle="modal"
+                      data-target="#proveedorModal"
+                      style="border-radius: 4px"
+                      (click)="seleccionProveedorModificacion(p)"
+                    >
+                      <span class="fas fa-edit"></span>
+                      <!--Modificar-->
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger"
+                      (click)="eliminarProveedor(p.id)"
+                      style="margin-left: 10px; border-radius: 4px"
+                    >
+                      <span class="fas fa-trash-alt"></span>
+                      <!--Eliminar-->
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr></tr>
+            </tfoot>
+          </table>
+          <div class="row" style="padding-top: 30px">
+            <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+            <div class="col-sm-6">
+              <ng-select
+                style="width: 200px; margin-left: auto"
+                name="example_length"
+                placeholder="Cantidad items"
+                [(ngModel)]="itemsPage"
+                (change)="listarProveedores()"
+              >
+                <ng-option value="5">5</ng-option>
+                <ng-option value="10">10</ng-option>
+                <ng-option value="20">20</ng-option>
+                <ng-option value="50">50</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <pagination-controls
+          (pageChange)="page = $event; listarProveedores()"
+          style="margin-left: auto; padding-right: 30px"
+        ></pagination-controls>
+      </div>
+    </div>
+  </div>
+  <div id="espacio">&nbsp;</div>
+</div>

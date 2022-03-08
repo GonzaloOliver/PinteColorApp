@@ -1,0 +1,20 @@
+#GridRuta {
+  margin-left: auto;
+}
+
+#SpamBuscadoresClientes {
+  width: 100px;
+  align-items: right;
+}
+
+table {
+  table-layout: fixed;
+}
+
+th {
+  text-align: left;
+}
+
+td {
+  overflow: hidden;
+}

@@ -1,0 +1,47 @@
+#GridRuta {
+  margin-left: auto;
+}
+
+table {
+  table-layout: fixed;
+}
+th {
+  text-align: left;
+}
+td {
+  overflow: hidden;
+}
+
+.positivo {
+  align-items: flex-end;
+  background-color: rgb(68, 177, 68);
+  height: 100px;
+  width: 100%;
+  padding-left: 5%;
+  padding-top: 30px;
+  text-align: center;
+}
+
+.negativo {
+  align-items: flex-end;
+  background-color: rgb(255, 98, 98);
+  height: 100px;
+  width: 100%;
+  padding-left: 5%;
+  padding-top: 30px;
+  text-align: center;
+}
+
+.cero {
+  align-items: flex-end;
+  background-color: rgb(100, 110, 247);
+  height: 100px;
+  width: 100%;
+  padding-left: 5%;
+  padding-top: 30px;
+  text-align: center;
+}
+
+#DatosCliente {
+  text-align: center;
+}

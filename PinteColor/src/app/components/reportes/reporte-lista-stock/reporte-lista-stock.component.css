@@ -1,0 +1,36 @@
+#GridRuta {
+  margin-left: auto;
+}
+thead {
+  display: block;
+}
+/*table {
+  table-layout: fixed;
+}*/
+tbody {
+  overflow-y: scroll;
+  display: block;
+  height: 50vh;
+}
+td {
+  overflow: hidden;
+}
+#listado_stock > thead > tr > th {
+  min-width: 19vw;
+  max-width: 19vw;
+}
+
+#listado_stock > tbody > tr > td {
+  min-width: 19vw;
+  max-width: 19vw;
+}
+
+#listado_stock > thead > tr > th {
+  min-width: 19vw;
+  max-width: 19vw;
+}
+
+#listado_stock > tbody > tr > td {
+  min-width: 19vw;
+  max-width: 19vw;
+}

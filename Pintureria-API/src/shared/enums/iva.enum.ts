@@ -1,0 +1,16 @@
+export enum IVA {
+  ResponsableInscripto = 1,
+  ResponsableNoInscripto = 2,
+  NoResponsable = 3,
+  SujetoExento = 4,
+  ConsumidorFinal = 5,
+  ResponsableMonotributo = 6,
+  SujetoNoCategorizado = 7,
+  ProveedorDelExterior = 8,
+  ClienteDelExterior = 9,
+  Liberado = 10,
+  AgentePercepcionResponsableInscripto = 11,
+  PeqContEventual = 12,
+  MonotributistaSocial = 13,
+  PeqContEventualSocial = 14,
+}

@@ -1,0 +1,348 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul class="breadcrumb" id="MarcoTitulosH3">
+    <h3 id="TitulosH3">Comprobantes</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home">Home</a>&nbsp;/&nbsp; Comprobantes
+    </li>
+  </ul>
+
+  <p class="d-flex flex-column" style="margin-left: auto">
+    <button
+      type="button"
+      class="btn btn-info"
+      data-toggle="modal"
+      data-target="#comprobanteModal"
+      [routerLink]="['/home/ventas']"
+    >
+      <span class="fas fa-plus"></span>
+      Agregar Comprobantes
+    </button>
+  </p>
+
+  <div
+    class="modal fade"
+    id="exampleModalComprobante"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalComprobante"
+    aria-hidden="true"
+    data-backdrop="static"
+    data-keyboard="false"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalComprobante">
+            Modificar Comprobante
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!-- Body del Modal -->
+        <div class="modal-body">
+          <ng-form id="formulario-modificar-venta">
+            <div class="form-group">
+              <div class="row col-xs-12">
+                <div class="form-group col-md-6">
+                  Punto de Venta:
+                  <input
+                    id="inputPuntoVenta"
+                    name="PuntoVenta"
+                    readonly="true"
+                    class="form-control"
+                    [(ngModel)]="objetoVenta.pos.posFiscalNumber"
+                  />
+                </div>
+                <div class="form-group col-md-6">
+                  N° Comprobante:
+                  <input
+                    id="inputNumeroComprobante"
+                    name="numeroComprobante"
+                    [(ngModel)]="objetoVenta.saleNumber"
+                    type="text"
+                    readonly="true"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" *ngIf="!esRecibo()">
+              <div class="row col-xs-12">
+                <div class="form-group col-md-6" >
+                  Condicion:
+                  <ng-select
+                    name="condicionVenta"
+                    [(ngModel)]="selectCondicionVenta"
+                    [items]="condiciones"
+                    bindValue="name"
+                    bindLabel="name"
+                    
+                  >
+                  <ng-option value="{{ con.name }}" *ngFor="let con of condiciones">{{ con.name }}</ng-option>
+                  </ng-select>
+                </div>
+                <div class="form-group col-md-6">
+                  Nro AFIP (Opcional):
+                  <input
+                    id="inputNumeroAfip"
+                    name="numeroAfip"
+                    type="text"
+                    class="form-control"
+                    [(ngModel)]="objetoVenta.afipNumber"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="row col-xs-12">
+                <div class="form-group col-md-12">
+                  Comentario (Opcional):
+                  <textarea
+                    id="inputComentario"
+                    name="comentario"
+                    style="height: 180px; resize: none"
+                    class="form-control"
+                    [(ngModel)]="objetoVenta.commentary"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+            <!--<div class="form-group">
+                Rubro:
+                <ng-select
+                  formControlName="name1"
+                  name="name1"
+                  [(ngModel)]="objetoLinea.sector.name"
+                >
+                  <ng-option
+                    value="{{ r.name }}"
+                    *ngFor="let r of listaRubros"
+                    class="form-control"
+                  >
+                    {{ r.name }}
+                  </ng-option>
+                </ng-select>
+
+                <div
+                  class="alert-danger"
+                  *ngIf="name1?.invalid && (name1?.dirty || name1?.touched)"
+                  role="alert"
+                >
+                  <div
+                    class="container-error-message"
+                    *ngIf="name1?.errors?.required"
+                  >
+                    Seleccione un Rubro
+                  </div>
+                </div>
+              </div>-->
+            <div class="modal-footer">
+              <button
+                type="submit"
+                class="btn btn-success"
+                data-dismiss="modal"
+                (click)="modificarVenta()"
+              >
+                <i class="fas fa-check"></i> Guardar
+              </button>
+              <button
+                (click)="cancelarEdicionComprobante()"
+                type="submit"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                <i class="fas fa-window-close"></i> Cancelar
+              </button>
+            </div>
+          </ng-form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row col-xs-12">
+    <div class="form-group col-md-2">
+      <input
+        id="inputFechaDesde"
+        name="filtroBusquedaFechaDesde"
+        type="date"
+        [(ngModel)]="filtroBusquedaFechaDesde"
+        (change)="listarComprobantes()"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group col-md-2">
+      <input
+        id="inputFechaHasta"
+        name="filtroBusquedaFechaHasta"
+        type="date"
+        [(ngModel)]="filtroBusquedaFechaHasta"
+        (change)="listarComprobantes()"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group col-md-4">
+      <ng-select
+        name="filtroBusquedaCliente"
+        [(ngModel)]="filtroBusquedaCliente"
+        (ngModelChange)="listarComprobantes()"
+        placeholder="Cliente"
+      >
+        <ng-option
+          value="{{ customer.businessName }}"
+          *ngFor="let customer of listaClientes"
+          class="form-control"
+          >{{ customer.businessName }}</ng-option
+        >
+      </ng-select>
+    </div>
+    <div class="form-group col-md-4">
+      <ng-select
+        [(ngModel)]="filtroBusquedaTipoComprobante"
+        name="filtroBusquedaTipoComprobante"
+        (ngModelChange)="listarComprobantes()"
+        placeholder="Tipo Comprobante"
+      >
+        <ng-option
+          value="{{ tp.value }}"
+          *ngFor="let tp of listaTipoComprobante"
+          class="form-control"
+        >
+          {{ tp.name }}
+        </ng-option>
+      </ng-select>
+    </div>
+  </div>
+
+  <div class="tab-content" id="myTabContent">
+    <div
+      class="tab-pane fade show active"
+      id="comprobantes"
+      role="tabpanel"
+      aria-labelledby="clientes-tab"
+    >
+      <div class="card shadow">
+        <div class="card-body">
+          <table
+            class="
+              display
+              nowrap
+              dataTable
+              dtr-inline
+              collapsed
+              table-bordered table-striped
+            "
+            id="listado_comprobantes"
+            role="grid"
+          >
+            <thead>
+              <tr>
+                <th scope="col" style="width: 100px">Numero</th>
+                <th scope="col">Tipo Comprobante</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Lista Precio</th>
+                <th scope="col">Condicion</th>
+                <th scope="col">Total</th>
+                <th scope="col" style="width: 130px">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let c of listaComprobantes
+                    | paginate
+                      : {
+                          itemsPerPage: itemsPage,
+                          currentPage: page,
+                          totalItems: totalItems
+                        }
+                "
+              >
+                <td>{{ c.pos.posFiscalNumber! + "-" + c.saleNumber }}</td>
+                <td>{{ c.proofType }}</td>
+                <td>
+                  {{ formatearFecha(c.date) }}
+                </td>
+                <td>
+                  {{ c.customer.businessName }}
+                </td>
+                <td>
+                  {{ formatearListaPrecio(c.pricelist) }}
+                </td>
+                <td>
+                  {{ mostrarCondicionDeVenta(c.isDebt) }}
+                </td>
+                <td>
+                  {{ " $ " + c.amount?.toFixed(2) }}
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    style="border-radius: 4px"
+                    [routerLink]="['/home/impresion-comprobante/' + c.id]"
+                  >
+                    <span class="fas fa-print"></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-warning"
+                    style="margin-left: 10px; border-radius: 4px"
+                    data-dismiss="modal"
+                    data-toggle="modal"
+                    data-target="#exampleModalComprobante"
+                    (click)="seleccionVentaModificacion(c)"
+                  >
+                    <span class="fas fa-edit"></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger"
+                    style="margin-left: 10px; border-radius: 4px"
+                    (click)="eliminarVenta(c.id)"
+                  >
+                    <span class="fas fa-trash-alt"></span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr></tr>
+            </tfoot>
+          </table>
+          <div class="row" style="padding-top: 30px">
+            <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+            <div class="col-sm-6">
+              <ng-select
+                style="width: 200px; margin-left: auto"
+                name="example_length"
+                placeholder="Cantidad items"
+                [(ngModel)]="itemsPage"
+                (change)="listarComprobantes()"
+              >
+                <ng-option value="5">5</ng-option>
+                <ng-option value="10">10</ng-option>
+                <ng-option value="20">20</ng-option>
+                <ng-option value="50">50</ng-option>
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <pagination-controls
+          (pageChange)="page = $event; listarComprobantes()"
+          style="margin-left: auto; padding-right: 30px"
+        ></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,236 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul id="MarcoTitulosH3" class="breadcrumb">
+    <li>
+      <h3 id="TitulosH3" style="padding-left: 10px" class="page-header">
+        Rubros
+      </h3>
+    </li>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home/dashboard">Home</a>&nbsp;/&nbsp;Rubros
+    </li>
+  </ul>
+
+  <p class="d-flex flex-column" style="margin-left: auto">
+    <button
+      type="button"
+      class="btn btn-info"
+      data-toggle="modal"
+      data-target="#exampleModal"
+      (click)="actualizarButtonConfirmacion(true)"
+      (click)="resetearFormulario()"
+    >
+      <span class="fas fa-plus"></span>
+      Agregar Rubro
+    </button>
+  </p>
+
+  <h1></h1>
+
+  <!-- Modal -->
+
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    data-backdrop="static"
+    data-keyboard="false"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 *ngIf="esObjetoNuevo" class="modal-title" id="exampleModalLabel">
+            Agregar Rubro
+          </h5>
+          <h5 *ngIf="!esObjetoNuevo" class="modal-title" id="exampleModalLabel">
+            Modificar Rubro
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- Body del Modal -->
+        <div class="modal-body">
+          <form
+            id="formulario-agregar-rubro"
+            name="formulario-agregar-rubro"
+            [formGroup]="contactFormulario"
+            (ngSubmit)="onSaveForm()"
+          >
+            <div class="form-group">
+              Nombre:
+              <input
+                id="inputRubro"
+                name="nombreRubro"
+                type="text"
+                [(ngModel)]="objetoRubro.name"
+                class="form-control"
+                formControlName="name"
+              />
+              <div
+                class="alert-danger"
+                *ngIf="name?.invalid && (name?.dirty || name?.touched)"
+                role="alert"
+              >
+                <div
+                  class="container-error-message"
+                  *ngIf="name?.errors?.required"
+                >
+                  El Campo es Obligatorio
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                (click)="guardarRubro()"
+                type="submit"
+                class="btn btn-success"
+                data-dismiss="modal"
+                *ngIf="esObjetoNuevo"
+                [disabled]="!contactFormulario.valid"
+              >
+                <i class="fas fa-check"></i> Guardar
+              </button>
+              <button
+                (click)="modificarRubro()"
+                *ngIf="!esObjetoNuevo"
+                type="submit"
+                class="btn btn-success"
+                data-dismiss="modal"
+                [disabled]="!contactFormulario.valid"
+              >
+                <i class="fas fa-check"></i> Actualizar
+              </button>
+              <button
+                (click)="cancelarRubro()"
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                <i class="fas fa-window-close"></i> Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row col-xs-12">
+    <div class="form-group col-md-12">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroRubro"
+          [(ngModel)]="filtroRubro"
+          placeholder="Rubro"
+          aria-label="Rubro"
+          aria-describedby="inputGroup-sizing-default"
+          (ngModelChange)="listarRubros()"
+        />
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="tab-content" id="myTabContent">
+      <div
+        class="tab-pane fade show active"
+        id="clientes"
+        role="tabpanel"
+        aria-labelledby="clientes-tab"
+      >
+        <div class="card shadow">
+          <div class="card-body">
+            <table
+              class="display nowrap dataTable dtr-inline collapsed table-bordered table-striped"
+              id="listado_rubros"
+            >
+              <thead>
+                <tr>
+                  <th scope="col" style="text-align: left">Nombre</th>
+                  <th scope="col" style="width: 80px">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let r of rubro
+                      | paginate
+                        : {
+                            itemsPerPage: itemsPage,
+                            currentPage: page,
+                            totalItems: totalItems
+                          }
+                  "
+                >
+                  <td>{{ r.name }}</td>
+                  <td>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic example"
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-outline-warning btn-block"
+                        data-dismiss="modal"
+                        data-toggle="modal"
+                        data-target="#exampleModal"
+                        style="border-radius: 4px"
+                        (click)="seleccionRubroModificacion(r)"
+                      >
+                        <span class="fas fa-edit"></span>
+                        <!--editar BOTÓN-->
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        style="margin-left: 10px; border-radius: 4px"
+                        (click)="eliminarRubro(r.id)"
+                      >
+                        <span class="fas fa-trash-alt"></span>
+                        <!--borrar BOTÓN-->
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr></tr>
+              </tfoot>
+            </table>
+            <div class="row" style="padding-top: 30px">
+              <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+              <div class="col-sm-6">
+                <ng-select
+                  style="width: 200px; margin-left: auto"
+                  name="example_length"
+                  placeholder="Cantidad items"
+                  [(ngModel)]="itemsPage"
+                  (change)="listarRubros()"
+                >
+                  <ng-option value="5">5</ng-option>
+                  <ng-option value="10">10</ng-option>
+                  <ng-option value="20">20</ng-option>
+                  <ng-option value="50">50</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <pagination-controls
+            (pageChange)="page = $event; listarRubros()"
+            style="margin-left: auto; padding-right: 30px"
+          ></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

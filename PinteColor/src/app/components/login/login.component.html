@@ -1,0 +1,25 @@
+<div class="wrapper fadeInDown">
+
+    <div id="formContent">
+      <form style="margin-top: 30px;">
+        <img src="assets\img\User.png" alt="Admin" class="rounded-circle" height='250' width="200"
+          style='padding-bottom:8%;' />
+
+        <input type="text" id="username" class="fadeIn second" name="usuario" placeholder="Usuario"
+          [(ngModel)]="objetoLogin.username" (keydown.enter)="onLogin()" />
+        <input type="password" id="password" class="fadeIn third" name="password" placeholder="Contraseña"
+          accesskey="13" (keydown.enter)="onLogin()" [(ngModel)]="objetoLogin.password" />
+        <br>
+        <div style='padding-left:50%; padding-top:5%;'>
+          <button class="btn btn1" (click)="onLogin()" style='transform: translate(-50%, -50%);'><b>Iniciar
+              sesión</b>
+          </button>
+        </div>
+      </form>
+      <div class="alert alert-info" role="alert" *ngIf="errorStatus">
+        <p>Los datos ingresados son incorrectos</p>
+      </div>
+    </div>
+
+
+</div>

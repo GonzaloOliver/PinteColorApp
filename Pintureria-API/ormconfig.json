@@ -1,0 +1,13 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5444,
+  "username": "pintureria",
+  "password": "pintureria",
+  "database": "pintureria",
+  "entities": [
+    "dist/**/*.entity{.ts,.js}"
+  ],
+  "synchronize": true,
+  "dropSchema": false
+}

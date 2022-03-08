@@ -1,0 +1,238 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul id="MarcoTitulosH3" class="breadcrumb">
+    <h3 id="TitulosH3" style="padding-left: 10px">Marcas</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home/dashboard">Home</a>&nbsp;/&nbsp;Marcas
+    </li>
+  </ul>
+
+  <p class="d-flex flex-column" style="margin-left: auto">
+    <button
+      type="button"
+      class="btn btn-info"
+      data-toggle="modal"
+      data-target="#exampleModal"
+      (click)="actualizarButtonConfirmacion(true)"
+      (click)="resetearFormulario()"
+    >
+      <span class="fas fa-plus"></span>
+      Agregar Marca
+    </button>
+  </p>
+
+  <h1></h1>
+
+  <!-- Modal -->
+
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    data-backdrop="static"
+    data-keyboard="false"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 *ngIf="esObjetoNuevo" class="modal-title" id="exampleModalLabel">
+            Agregar Marca
+          </h5>
+          <h5 *ngIf="!esObjetoNuevo" class="modal-title" id="exampleModalLabel">
+            Modificar Marca
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- Body del Modal -->
+        <div class="modal-body">
+          <form
+            id="formulario-agregar-marca"
+            name="formulario-agregar-marca"
+            [formGroup]="contactFormulario"
+            (ngSubmit)="onSaveForm()"
+          >
+            <div class="form-group">
+              Nombre:
+              <input
+                id="inputMarca"
+                name="nombreMarca"
+                type="text"
+                [(ngModel)]="objetoMarca.name"
+                class="form-control"
+                formControlName="name"
+              />
+              <div
+                class="alert-danger"
+                *ngIf="name?.invalid && (name?.dirty || name?.touched)"
+                role="alert"
+              >
+                <div
+                  class="container-error-message"
+                  *ngIf="name?.errors?.required"
+                >
+                  <i
+                    style="padding-left: 5px"
+                    class="fas fa-exclamation-circle"
+                  ></i>
+                  El Campo es Obligatorio
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                (click)="guardarMarca()"
+                type="submit"
+                class="btn btn-success"
+                data-dismiss="modal"
+                *ngIf="esObjetoNuevo"
+                [disabled]="!contactFormulario.valid"
+              >
+                <i class="fas fa-check"></i> Guardar
+              </button>
+              <button
+                (click)="modificarMarca()"
+                *ngIf="!esObjetoNuevo"
+                type="submit"
+                class="btn btn-success"
+                data-dismiss="modal"
+                [disabled]="!contactFormulario.valid"
+              >
+                <i class="fas fa-check"></i> Actualizar
+              </button>
+              <button
+                (click)="cancelarMarca()"
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                <i class="fas fa-window-close"></i> Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row col-xs-12">
+    <div class="form-group col-md-12">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroMarca"
+          [(ngModel)]="filtroMarca"
+          placeholder="Marca"
+          aria-label="Marca"
+          aria-describedby="inputGroup-sizing-default"
+          (ngModelChange)="listarMarcas()"
+        />
+      </div>
+    </div>
+  </div>
+  <div>
+    <div>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="marcas"
+          role="tabpanel"
+          aria-labelledby="marcas-tab"
+        >
+          <div class="card shadow">
+            <div class="card-body">
+              <table
+                class="display nowrap dataTable dtr-inline collapsed table-bordered table-striped"
+                id="listado_marcas"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col" style="width: 80px">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="
+                      let m of marca
+                        | paginate
+                          : {
+                              itemsPerPage: itemsPage,
+                              currentPage: page,
+                              totalItems: totalItems
+                            }
+                    "
+                  >
+                    <td>{{ m.name }}</td>
+                    <td>
+                      <div
+                        class="btn-group"
+                        role="group"
+                        aria-label="Basic example"
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-outline-warning btn-block"
+                          data-dismiss="modal"
+                          data-toggle="modal"
+                          data-target="#exampleModal"
+                          style="border-radius: 4px"
+                          (click)="seleccionMarcaModificacion(m)"
+                        >
+                          <span class="fas fa-edit"></span>
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-outline-danger"
+                          style="margin-left: 10px; border-radius: 4px"
+                          (click)="eliminarMarca(m.id)"
+                        >
+                          <span class="fas fa-trash-alt"></span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr></tr>
+                </tfoot>
+              </table>
+              <div class="row" style="padding-top: 30px">
+                <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+                <div class="col-sm-6">
+                  <ng-select
+                    style="width: 200px; margin-left: auto"
+                    name="example_length"
+                    placeholder="Cantidad items"
+                    [(ngModel)]="itemsPage"
+                    (change)="listarMarcas()"
+                  >
+                    <ng-option value="5">5</ng-option>
+                    <ng-option value="10">10</ng-option>
+                    <ng-option value="20">20</ng-option>
+                    <ng-option value="50">50</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+
+            <pagination-controls
+              (pageChange)="page = $event; listarMarcas()"
+              style="margin-left: auto; padding-right: 30px"
+            ></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

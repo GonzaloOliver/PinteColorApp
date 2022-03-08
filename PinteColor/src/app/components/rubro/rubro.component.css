@@ -1,0 +1,14 @@
+#GridRuta {
+  margin-left: auto;
+}
+
+#tabla {
+  align-content: justify;
+  padding-right: 200%;
+}
+table {
+  table-layout: fixed;
+}
+td {
+  overflow: hidden;
+}

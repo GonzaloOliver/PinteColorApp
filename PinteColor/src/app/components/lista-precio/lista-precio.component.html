@@ -1,0 +1,194 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul id="MarcoTitulosH3" class="breadcrumb">
+    <h3 id="TitulosH3" style="padding-left: 10px">Listas de Precio</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home/dashboard">Home</a>&nbsp;/&nbsp;ListaPrecio
+    </li>
+  </ul>
+
+  <p class="d-flex flex-column" style="margin-left: auto">
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal"
+      (click)="actualizarButtonConfirmacion(true)" (click)="resetearFormulario()">
+      <span class="fas fa-plus"></span>
+      Agregar Lista de Precio
+    </button>
+  </p>
+
+  <h1></h1>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 *ngIf="esObjetoNuevo" class="modal-title" id="exampleModalLabel">
+            Agregar Lista de Precio
+          </h5>
+          <h5 *ngIf="!esObjetoNuevo" class="modal-title" id="exampleModalLabel">
+            Modificar Lista de Precio
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- Body del Modal -->
+        <div class="modal-body">
+          <form id="formulario-agregar-lista-precio" name="formulario-agregar-lista-precio"
+            [formGroup]="contactFormulario" (ngSubmit)="onSaveForm()">
+            <div class="form-group">
+              Nombre:
+              <input id="inputNombreListaPrecio" name="nombrelistaprecio" type="text"
+                [(ngModel)]="objetoListaPrecio.name" class="form-control" formControlName="name" />
+              <div class="alert-danger" *ngIf="name?.invalid && (name?.dirty || name?.touched)" role="alert">
+                <div class="container-error-message" *ngIf="name?.errors?.required">
+                  <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                  El Campo es Obligatorio
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              Porcentaje:
+              <input id="inputPorcentajeListaPrecio" name="PorcentajeListaPrecio" type="number"
+                [(ngModel)]="objetoListaPrecio.value" class="form-control" formControlName="value" />
+              <div class="alert-danger" *ngIf="value?.invalid && (value?.dirty || value?.touched)" role="alert">
+                <div class="container-error-message" *ngIf="value?.errors?.required">
+                  <i style="padding-left: 5px" class="fas fa-exclamation-circle"></i>
+                  Debe Ingresar Numeros
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button (click)="guardarListaPrecio()" type="submit" class="btn btn-success" data-dismiss="modal"
+                *ngIf="esObjetoNuevo" [disabled]="!contactFormulario.valid">
+                <i class="fas fa-check"></i> Guardar
+              </button>
+              <button (click)="modificarListaPrecio()" *ngIf="!esObjetoNuevo" type="submit" class="btn btn-success"
+                data-dismiss="modal" [disabled]="!contactFormulario.dirty">
+                <i class="fas fa-check"></i> Actualizar
+              </button>
+              <button (click)="cancelarListaPrecio()" type="button" class="btn btn-secondary" data-dismiss="modal">
+                <i class="fas fa-window-close"></i> Cancelar
+              </button>
+            </div>
+
+
+
+
+
+
+
+          </form>
+
+
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row col-xs-12">
+    <div class="form-group col-md-12">
+      <div class="input-group-prepend">
+        <input type="text" class="form-control" name="filtroBusquedaNombre" [(ngModel)]="filtroBusquedaNombre"
+          placeholder="Nombre" aria-label="Lista de Precio" aria-describedby="inputGroup-sizing-default"
+          (ngModelChange)="listarListaPrecio()" />
+      </div>
+    </div>
+  </div>
+  <div>
+    <div>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="listasdeprecios" role="tabpanel"
+          aria-labelledby="listasdeprecios-tab">
+          <div class="card shadow">
+
+
+            <div class="card-body">
+
+              <table class="display nowrap dataTable dtr-inline collapsed table-bordered table-striped"
+                id="listado-listas-de-precios">
+                <thead>
+                  <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Porcentaje</th>
+                    <th scope="col" style="width: 80px">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="
+                      let l of listaPrecio
+                        | paginate
+                          : {
+                              itemsPerPage: itemsPage,
+                              currentPage: page,
+                              totalItems: totalItems
+                            }
+                    ">
+                    <td>{{ l.name }}</td>
+                    <td>{{ l.value + " % " }}</td>
+                    <td>
+                      <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-outline-warning btn-block" data-dismiss="modal"
+                          data-toggle="modal" data-target="#exampleModal" style="border-radius: 4px"
+                          (click)="seleccionListaPrecioModificacion(l)">
+                          <span class="fas fa-edit"></span>
+                        </button>
+                        <button type="button" class="btn btn-outline-danger"
+                          style="margin-left: 10px; border-radius: 4px" (click)="eliminarListaPrecio(l.id)">
+                          <span class="fas fa-trash-alt"></span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+
+                </tbody>
+
+                <tfoot>
+
+                  <tr>
+                  </tr>
+                </tfoot>
+
+
+              </table>
+              <div>
+                <p></p>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-12" style="float:right; padding-bottom:10px;"><button (click)="exportexcel()"
+                    class="btn btn-success" style="float:right; height: 50px; width: 50px;"><span
+                      class="fas fa-file-excel" data-toggle="tooltip" data-placement="left" title="Exportar a Excel"
+                      alt="Exportar a Excel"></span>
+                  </button></div>
+
+                <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+
+                <div class="col-sm-6">
+                  <ng-select style="width: 200px; margin-left: auto" name="example_length" placeholder="Cantidad items"
+                    [(ngModel)]="itemsPage" (change)="listarListaPrecio()">
+                    <ng-option value="5">5</ng-option>
+                    <ng-option value="10">10</ng-option>
+                    <ng-option value="20">20</ng-option>
+                    <ng-option value="50">50</ng-option>
+                  </ng-select>
+                </div>
+
+
+
+              </div>
+
+
+            </div>
+
+            <pagination-controls (pageChange)="page = $event; listarListaPrecio()"
+              style="margin-left: auto; padding-right: 10px"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

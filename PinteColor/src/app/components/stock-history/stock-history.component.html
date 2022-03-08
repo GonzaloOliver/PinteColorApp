@@ -1,0 +1,153 @@
+<div id="idContentWrapper" class="content-wrapper">
+  <ul class="breadcrumb" id="MarcoTitulosH3">
+    <h3 id="TitulosH3">Movimientos de Stock</h3>
+    <li id="GridRuta" class="breadcrumb-item active" aria-current="page">
+      <a href="/home">Home</a>&nbsp;/&nbsp;Mov. Stock
+    </li>
+  </ul>
+  <div class="row col-xs-12">
+    <div class="form-group col-md-3">
+      <ng-select
+        name="filtroBusquedaNombreArticulo"
+        [(ngModel)]="objetoArticulo.name"
+        (ngModelChange)="listarStockHistory()"
+        placeholder="Todas los Articulos"
+      >
+        <ng-option
+          value="{{ l.name }}"
+          *ngFor="let l of listaArticulo"
+          class="form-control"
+        >
+          {{ l.name }}
+        </ng-option>
+      </ng-select>
+    </div>
+    <div class="form-group col-md-3">
+      <ng-select
+        name="filtroBusquedaSucursal"
+        [(ngModel)]="objetoSucursal.name"
+        (ngModelChange)="listarStockHistory()"
+        placeholder="Todas las Sucursales"
+      >
+        <ng-option
+          value="{{ s.name }}"
+          *ngFor="let s of listaSucursales"
+          class="form-control"
+        >
+          {{ s.name }}
+        </ng-option>
+      </ng-select>
+    </div>
+    <div class="form-group col-md-3">
+      <ng-select
+        name="stock.proveedor"
+        [(ngModel)]="objetoProveedor.businessName"
+        (ngModelChange)="listarStockHistory()"
+        placeholder="Todos los Proveedores"
+      >
+        <ng-option
+          value="{{ p.businessName }}"
+          *ngFor="let p of listaProveedores"
+          class="form-control"
+        >
+          {{ p.businessName }}
+        </ng-option>
+      </ng-select>
+    </div>
+    <div class="form-group col-md-3">
+      <div class="input-group-prepend">
+        <input
+          type="text"
+          class="form-control"
+          name="filtroBusquedaDescripcion"
+          [(ngModel)]="objetoStockHistory.description"
+          (ngModelChange)="listarStockHistory()"
+          placeholder="Observacion"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="tab-content" id="myTabContent">
+      <div
+        class="tab-pane fade show active"
+        id="stockHistory"
+        role="tabpanel"
+        aria-labelledby="stockHistory-tab"
+      >
+        <div class="card shadow">
+          <div class="card-body">
+            <table
+              class="display nowrap dataTable dtr-inline collapsed table-bordered table-striped"
+              id="stock_history"
+              role="grid"
+            >
+              <thead>
+                <tr>
+                  <th scope="col" style="width: 6vw">Fecha</th>
+                  <th scope="col" style="width: 6vw">Codigo Art.</th>
+                  <th scope="col" style="width: 10vw">Nombre Art.</th>
+                  <th scope="col" style="width: 6vw">Cantidad</th>
+                  <th scope="col" style="width: 8vw">Destino</th>
+                  <th scope="col">Observacion</th>
+                  <th scope="col" style="width: 10vw">Proveedor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let stock of listaStockHistory
+                      | paginate
+                        : {
+                            itemsPerPage: itemsPage,
+                            currentPage: page,
+                            totalItems: totalItems
+                          }
+                  "
+                >
+                  <td style="width: 6vw">{{ formatearFecha(stock.date) }}</td>
+                  <td >{{ stock.good.code }}</td>
+                  <td>{{ stock.good.name }}</td>
+                  <td>{{ stock.change }}</td>
+                  <td>
+                    {{ stock.applyTo.name + buscarDestinoSucursal(stock) }}
+                  </td>
+                  <td>{{ stock.description }}</td>
+                  <td>
+                    {{ buscarProveedor(stock) }}
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr></tr>
+                <tr></tr>
+              </tfoot>
+            </table>
+            <div class="row" style="padding-top: 30px">
+              <div class="col-sm-6">Total de elementos: {{ totalItems }}</div>
+              <div class="col-sm-6">
+                <ng-select
+                  style="width: 200px; margin-left: auto"
+                  name="example_length"
+                  placeholder="Cantidad items"
+                  [(ngModel)]="itemsPage"
+                  (change)="listarStockHistory()"
+                >
+                  <ng-option value="5">5</ng-option>
+                  <ng-option value="10">10</ng-option>
+                  <ng-option value="20">20</ng-option>
+                  <ng-option value="50">50</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <pagination-controls
+            (pageChange)="page = $event; listarStockHistory()"
+            style="margin-left: auto; padding-right: 30px"
+          ></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
